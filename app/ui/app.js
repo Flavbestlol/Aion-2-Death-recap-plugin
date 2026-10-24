@@ -27,6 +27,12 @@
   let pinned = false;
   let closingUntil = 0;
   const KIND = { skill: "Skill", passive: "Passive", theostone: "Theostone", attack: "Basic attack" };
+  // The overlay's width (as main.rs makes it), how long a lost duel's and a
+  // survived fight's recap stay, and the fade-out.
+  const WIDTH = 900;
+  const DUEL_SHOWN_MS = 20000;
+  const FIGHT_SHOWN_MS = 12000;
+  const FADE_MS = 260;
 
   // ---- helpers -----------------------------------------------------------
   const h = (tag, props = {}, ...kids) => {
@@ -35,6 +41,8 @@
       if (v == null || v === false) continue;
       if (k === "class") el.className = v;
       else if (k === "text") el.textContent = v;
+      // Through the CSSOM, so the page needs no inline styles in its CSP.
+      else if (k === "style") el.style.cssText = v;
       else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
       else el.setAttribute(k, v);
     }
@@ -251,7 +259,7 @@
     const head = el.dataset.cc === "all" ? h("div", { class: "t", text: "What controlled you" }) : null;
     card.replaceChildren(...[head, ...lines.slice(0, 8).map(ccLine)].filter(Boolean));
     const r = el.getBoundingClientRect();
-    card.style.left = `${Math.max(4, Math.min(r.left - 8, 900 - 300))}px`;
+    card.style.left = `${Math.max(4, Math.min(r.left - 8, WIDTH - 300))}px`;
     card.style.top = `${r.bottom + 6}px`;
     card.hidden = false;
     fit();
@@ -339,7 +347,7 @@
           img(it.icon, it.name), it.exceed ? diamond(it.exceed) : null, it.enchant ? h("span", { class: "en", text: `+${it.enchant}` }) : null))) : null,
       h("div", { class: `note${items.length || ex.gear_ready ? "" : " waiting"}`, text: note })].filter(Boolean));
     const r = el.getBoundingClientRect();
-    card.style.left = `${Math.min(r.left, 900 - 310)}px`;
+    card.style.left = `${Math.min(r.left, WIDTH - 310)}px`;
     card.style.top = `${r.bottom + 6}px`;
     card.hidden = false;
     fit();
@@ -408,6 +416,8 @@
     if (open === root.classList.contains("open")) return fit();
     root.classList.toggle("open", open);
     if (!open) {
+      // The details slide shut in 320 ms (style.css): the window keeps their
+      // height until then.
       closingUntil = Date.now() + 360;
       setTimeout(fit, 380);
     }
@@ -425,12 +435,12 @@
     root.hidden = false;
     fit();
     // A death stays until you are back; a lost duel or a survived fight goes by itself.
-    if (r.view.outcome !== "died") hideTimer = setTimeout(hide, r.view.outcome === "duel_lost" ? 20000 : 12000);
+    if (r.view.outcome !== "died") hideTimer = setTimeout(hide, r.view.outcome === "duel_lost" ? DUEL_SHOWN_MS : FIGHT_SHOWN_MS);
   }
   function hide() {
     pinned = false;
     root.classList.add("leaving");
-    leaveTimer = setTimeout(() => { root.hidden = true; root.classList.remove("open"); invoke("hide_overlay"); }, 260);
+    leaveTimer = setTimeout(() => { root.hidden = true; root.classList.remove("open"); invoke("hide_overlay"); }, FADE_MS);
   }
 
   listen("recap", (e) => show(e.payload));

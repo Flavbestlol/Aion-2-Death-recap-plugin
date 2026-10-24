@@ -273,6 +273,11 @@ const MAX_HITS: usize = 50_000;
 /// The most players whose combat power is kept: past it the list starts
 /// again (the game sends it again when they come into view).
 const MAX_PROFILES: usize = 20_000;
+/// An HP record this close to a hit is the hit's own HP change.
+const SAME_MOMENT_MS: i64 = 50;
+/// A debuff or mark put on the player this shortly before a fight opens
+/// belongs to it; and a duel ends at 1 HP only this shortly after a hit.
+const JUST_BEFORE_MS: i64 = 2_000;
 
 /// What the player's HP did after hits that may be heals.
 #[derive(Clone, Copy)]
@@ -330,8 +335,8 @@ impl Recorder {
             }
             // Who is who does not depend on knowing the player: kept now, or
             // a name or combat power seen minutes before the game says who
-            // the player is would be lost (an Abyss death, 2026-10-21: the
-            // player was known only 100 s in, after the death).
+            // the player is would be lost (the game can name the player only
+            // after a death).
             if matches!(
                 e.kind,
                 EventKind::Name { .. } | EventKind::PlayerProfile { .. } | EventKind::NpcIdentified { .. }
@@ -407,7 +412,8 @@ impl Recorder {
                 if Some(*target) == self.me && Some(*actor) != self.me =>
             {
                 let (skill, damage) = (*skill, *damage);
-                let just_before = self.last_record.filter(|(at, _)| e.at_ms - at <= 50).map(|(_, moved)| moved);
+                let just_before =
+                    self.last_record.filter(|(at, _)| e.at_ms - at <= SAME_MOMENT_MS).map(|(_, moved)| moved);
                 if !may_heal(skill) || self.learned(skill) == Some(false) || self.hostile(*actor) {
                     self.since_record += damage;
                     self.commit(e);
@@ -442,7 +448,7 @@ impl Recorder {
                     open.debuffs.push(d);
                     open.active.insert(b.instance, open.debuffs.len() - 1);
                 } else {
-                    self.recent.retain(|(_, r)| e.at_ms - r.from_ms <= 2_000);
+                    self.recent.retain(|(_, r)| e.at_ms - r.from_ms <= JUST_BEFORE_MS);
                     self.recent.push((b.instance, d));
                 }
             }
@@ -501,7 +507,11 @@ impl Recorder {
                     done.extend(self.end(Outcome::Died, e.at_ms));
                 } else if *hp == 1
                     && before.is_some_and(|b| b > 1)
-                    && self.open.as_ref().and_then(|o| o.hits.last()).is_some_and(|h| e.at_ms - h.at_ms <= 2_000)
+                    && self
+                        .open
+                        .as_ref()
+                        .and_then(|o| o.hits.last())
+                        .is_some_and(|h| e.at_ms - h.at_ms <= JUST_BEFORE_MS)
                 {
                     done.extend(self.end(Outcome::DuelLost, e.at_ms));
                 }
@@ -678,7 +688,7 @@ impl Recorder {
             };
             // Effects put on the player just before (a mark with the opener).
             for (instance, d) in std::mem::take(&mut self.recent) {
-                if at_ms - d.from_ms <= 2_000 {
+                if at_ms - d.from_ms <= JUST_BEFORE_MS {
                     open.debuffs.push(d);
                     open.active.insert(instance, open.debuffs.len() - 1);
                 }
