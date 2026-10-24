@@ -1,5 +1,6 @@
-/* Death Recap's settings: the overlay's look (charcoal panel, thin borders,
-   square corners, teal accents, the game's font). */
+/* Death Recap's settings, in the overlay's look: the game's own (charcoal
+   panel, thin borders, square corners, teal accents, the game's font), or the
+   HUD every add-on shares (`body[data-theme="hud"]`, at the end). */
 @font-face { font-family: "AION2"; font-weight: 700; src: url("https://assets.playnccdn.com/uikit/preorder/client/fonts/aion2_Bold.woff2") format("woff2"); }
 @font-face { font-family: "AION2"; font-weight: 500; src: url("https://assets.playnccdn.com/uikit/preorder/client/fonts/aion2_Medium.woff2") format("woff2"); }
 
@@ -28,3 +29,30 @@ header { display: flex; align-items: center; gap: 8px; padding: 10px 12px; borde
 .seg button + button { border-left: 1px solid rgba(255, 255, 255, 0.12); }
 .seg button[aria-pressed="true"] { color: var(--cp); background: rgba(54, 197, 201, 0.15); }
 footer { margin-top: auto; padding: 8px 12px; color: var(--dim); font-size: 10px; border-top: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- The HUD look ---- */
+body[data-theme="hud"] {
+  --text: #ece4d0; --dim: #8d93a3; --cp: #ffe7a6; --gold: #f2c35b;
+  --num: "Bahnschrift", "Bahnschrift SemiCondensed", "DIN Alternate", "Segoe UI", system-ui, sans-serif;
+  font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+}
+body[data-theme="hud"] .panel {
+  border: 0; border-radius: 14px; overflow: hidden;
+  background: radial-gradient(360px 90px at 20% 0%, rgba(242, 195, 91, 0.1), transparent 70%), linear-gradient(135deg, rgba(10, 12, 17, 0.985), rgba(8, 10, 15, 0.975));
+  box-shadow: inset 0 0 0 1px rgba(242, 195, 91, 0.24);
+}
+body[data-theme="hud"] header { border-bottom-color: rgba(242, 195, 91, 0.18); background: linear-gradient(90deg, rgba(242, 195, 91, 0.08), transparent 60%); }
+body[data-theme="hud"] .skull { color: var(--gold); filter: drop-shadow(0 0 6px rgba(242, 195, 91, 0.45)); }
+body[data-theme="hud"] .title b { font: 600 15px var(--num); color: var(--text); }
+body[data-theme="hud"] .opt { border-bottom-color: rgba(236, 228, 208, 0.06); }
+body[data-theme="hud"] .close { border-radius: 50%; }
+body[data-theme="hud"] .close:hover { color: var(--cp); background: rgba(236, 228, 208, 0.06); }
+body[data-theme="hud"] .sw { border-radius: 999px; border-color: rgba(236, 228, 208, 0.22); background: rgba(0, 0, 0, 0.35); }
+body[data-theme="hud"] .sw::after { border-radius: 50%; background: #8d93a3; }
+body[data-theme="hud"] .sw[aria-checked="true"] { border-color: rgba(242, 195, 91, 0.7); background: rgba(242, 195, 91, 0.18); }
+body[data-theme="hud"] .sw[aria-checked="true"]::after { background: linear-gradient(135deg, #ffe7a6, #f2c35b 55%, #a8792a); box-shadow: 0 0 8px rgba(242, 195, 91, 0.6); }
+body[data-theme="hud"] .seg { border-radius: 9px; overflow: hidden; border-color: rgba(236, 228, 208, 0.18); }
+body[data-theme="hud"] .seg button { font-family: var(--num); }
+body[data-theme="hud"] .seg button + button { border-left-color: rgba(236, 228, 208, 0.1); }
+body[data-theme="hud"] .seg button[aria-pressed="true"] { color: var(--cp); background: rgba(242, 195, 91, 0.16); }
+body[data-theme="hud"] footer { border-top-color: rgba(242, 195, 91, 0.14); }

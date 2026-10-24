@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="settings.css">
 <script src="settings.js" defer></script>
 </head>
-<body>
+<body data-theme="hud">
 <main class="panel">
   <header>
     <svg class="skull" viewBox="0 0 24 24" aria-hidden="true">
@@ -33,8 +33,11 @@
     </div>
   </div>
   <div class="opt">
-    <span>Skull icon by the minimap<small>Turned off: start Death Recap again for these settings</small></span>
-    <button type="button" class="sw" role="switch" data-key="icon"></button>
+    <span>Look<small>The HUD every add-on shares, or the game's own</small></span>
+    <div class="seg" id="theme">
+      <button type="button" data-value="hud">HUD</button>
+      <button type="button" data-value="game">Game</button>
+    </div>
   </div>
   <footer id="status"></footer>
 </main>

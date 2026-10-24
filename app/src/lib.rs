@@ -6,6 +6,7 @@
 //! looks attackers up on the official AION 2 site. The windows are in
 //! `main.rs`; everything they show comes from here.
 
+pub mod lookups;
 pub mod reader;
 pub mod settings;
 pub mod store;

@@ -34,6 +34,9 @@ pub struct Extra {
     pub items: Vec<Item>,
     /// There is an official character page to open.
     pub page: bool,
+    /// The gear is in (or will not come): the card stops saying it is on
+    /// its way.
+    pub gear_ready: bool,
 }
 
 pub struct Shared {

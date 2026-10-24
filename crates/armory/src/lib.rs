@@ -10,7 +10,9 @@
 //! asked: it sends a character's name and server to the official site, nothing
 //! else. It is polite to the site: one request at a time, at least a second
 //! apart; answers kept for 10 minutes; and after the site says "too many" (403
-//! or 429) it asks nothing for 10 minutes.
+//! or 429) it asks nothing for a while: 20 seconds the first time, twice as
+//! long each time it says so again, never more than 5 minutes, back to 20
+//! seconds once it answers.
 //!
 //! The server list (`data/servers.json`, 106 servers in 5 regions) comes from
 //! eiruuru/aion2-char-sheet (GPL-3.0), `src/api/servers.ts`, commit 0af5d9f.
@@ -199,13 +201,28 @@ pub struct Pace {
     pub gap: Duration,
     /// How long an answer is kept.
     pub keep: Duration,
-    /// How long to stop after the site says "too many".
+    /// How long to stop the first time the site says "too many"; twice as
+    /// long each time it says so again before it answers.
     pub hold: Duration,
+    /// The longest stop.
+    pub max_hold: Duration,
 }
 
 impl Default for Pace {
     fn default() -> Self {
-        Pace { gap: Duration::from_secs(1), keep: Duration::from_secs(600), hold: Duration::from_secs(600) }
+        Pace {
+            gap: Duration::from_secs(1),
+            keep: Duration::from_secs(600),
+            hold: Duration::from_secs(20),
+            max_hold: Duration::from_secs(300),
+        }
+    }
+}
+
+impl Pace {
+    /// The stop after the site said "too many" `strikes + 1` times in a row.
+    fn hold_for(&self, strikes: u32) -> Duration {
+        self.hold.saturating_mul(1u32 << strikes.min(16)).min(self.max_hold)
     }
 }
 
@@ -213,6 +230,8 @@ impl Default for Pace {
 struct State {
     last_request: Option<Instant>,
     held_until: Option<Instant>,
+    /// "Too many" answers in a row (the next stop doubles with each).
+    strikes: u32,
     cache: HashMap<(u16, String), (Instant, Result<Profile, Error>)>,
     gear: HashMap<String, (Instant, Result<Vec<Item>, Error>)>,
 }
@@ -360,12 +379,18 @@ impl<T: Transport> Armory<T> {
             state.last_request = Some(Instant::now());
         }
         let (status, body) = self.transport.get(url).map_err(Error::Network)?;
+        if status != 403 && status != 429 {
+            self.lock().strikes = 0;
+        }
         match status {
             200 => serde_json::from_str(&body).map_err(|_| Error::Unexpected("not JSON".into())),
             404 => Err(Error::NotFound),
             403 | 429 => {
-                self.lock().held_until = Some(Instant::now() + self.pace.hold);
-                Err(Error::Held { seconds_left: self.pace.hold.as_secs() })
+                let mut state = self.lock();
+                let hold = self.pace.hold_for(state.strikes);
+                state.strikes = state.strikes.saturating_add(1);
+                state.held_until = Some(Instant::now() + hold);
+                Err(Error::Held { seconds_left: hold.as_secs() })
             }
             s => Err(Error::Status(s)),
         }

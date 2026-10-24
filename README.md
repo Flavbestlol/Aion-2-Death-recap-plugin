@@ -6,9 +6,9 @@ When you die in AION 2, Death Recap shows who killed you, with what, and what co
 - **The details** (Alt, or a click): per attacker, when they joined, damage and crits, their skills with the game's icons, which ability controlled you (skill, passive or Theostone), how many times and for how long, and what you dealt them.
 - **Monsters and bosses** get a drawn mark and a *Monster* or *Boss* tag.
 - **Who hunts you**: a red number on a player who killed you before; hover it for when and with what. Kept for this session, 24 hours or 3 days (your choice).
-- **The skull by the minimap** (shown while the game is in front): a click opens the last recap any time; a right-click opens the settings; drag it where you like.
-- **In the hub and on the dock**: a death raises a note with the killer's class emblem (the dock's skull lights up), taken back when you are up again. The hub's **Open** shows the last recap, **Settings** opens Death Recap's settings.
-- **Online lookups** (off until you turn them on): an attacker's gear score, official portrait and gear, from the official AION 2 site. Hover a portrait for the gear; click a name for their character page.
+- **On Flav-Toolkit's dock and in its hub**: a death raises a note, *Killed by Sampleton · 140.6K CP*, with the killer's class emblem (the dock's skull lights up), taken back when you are up again. The dock's skull and the hub's **Open** show the last recap; the hub's **Settings** opens Death Recap's settings.
+- **Online lookups** (off until you turn them on): an attacker's gear score, official portrait and gear, from the official AION 2 site, the killer first, then whoever opened the fight, then the rest; when the site is busy, they come a little later instead of not at all. Hover a portrait for the gear (enchant level, and the diamond level past +15); click a name for their character page.
+- **Two looks**: the HUD every Flav-Toolkit add-on shares (the default), or the game's own; the settings switch them.
 
 ## Install
 

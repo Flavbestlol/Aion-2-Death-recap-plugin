@@ -35,20 +35,7 @@ pub fn blocked() -> bool {
     }
 }
 
-/// The game, or Death Recap itself, is the window in front. True where
-/// this is not built (not Windows).
-pub fn game_in_front() -> bool {
-    #[cfg(windows)]
-    {
-        imp::game_in_front()
-    }
-    #[cfg(not(windows))]
-    {
-        true
-    }
-}
-
-/// Give the game the focus back (after a click on Death Recap's icon).
+/// Give the game the focus back (after Death Recap's settings close).
 pub fn focus_game() {
     #[cfg(windows)]
     imp::focus_game();
@@ -134,16 +121,6 @@ mod imp {
                 .next()
                 .is_some_and(|n| n.eq_ignore_ascii_case("AION2.exe"))
         }
-    }
-
-    pub fn game_in_front() -> bool {
-        let hwnd = unsafe { GetForegroundWindow() };
-        if hwnd.0.is_null() {
-            return false;
-        }
-        let mut pid = 0u32;
-        unsafe { GetWindowThreadProcessId(hwnd, Some(&mut pid)) };
-        pid == unsafe { GetCurrentProcessId() } || is_game(hwnd)
     }
 
     pub fn focus_game() {
