@@ -144,7 +144,8 @@ img { display: block; }
 .gear .head .s span { display: flex; align-items: center; gap: 3px; }
 .gear .grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; padding: 10px 12px; }
 .gear .it { position: relative; }
-.gear .it img { width: 100%; }
+/* Square before the icon has loaded, so the window is sized to the whole card at once. */
+.gear .it img { display: block; width: 100%; aspect-ratio: 1; object-fit: contain; }
 .gear .it .en { position: absolute; right: 2px; bottom: 0; font-size: 10px; color: #FFF; text-shadow: 0 0 2px #000; }
 /* A diamond past +15, as the official site marks it: a blue diamond with its level. */
 .gear .it .ex { position: absolute; left: 1px; top: 1px; width: 17px; height: 17px; display: grid; place-items: center; }
