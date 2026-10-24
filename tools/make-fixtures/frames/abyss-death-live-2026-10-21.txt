@@ -1,8 +1,8 @@
-# The first death read live (flav live, 2026-10-21, Global, in the Abyss), from the session it recorded.
+# The first death read live (flav live, in the Abyss), from the session it recorded.
 # The player: entity 12445 (a Ranger). Killed by two players: entity 10159 (a Ranger) and entity 12645 (an Assassin,
 # the final blow). The game told the engine who the player is only after the death: the recap must still hold
 # every hit from before.
-# Every hit, dodge/resist and buff frame on the player from 23:38:28 to 23:38:36 (UTC+3), and the player's live
+# Every hit, dodge/resist and buff frame on the player in those 8 seconds, and the player's live
 # HP records (00 8D). Ids only, no names.
 # Format: capture time (Unix ms) <space> the whole frame in hex.
 1792615108695 2604389D612600AF4F143DD600A103000001DBDBAF5301000000DC619A07025C5C0100

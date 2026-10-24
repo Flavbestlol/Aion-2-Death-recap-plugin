@@ -111,8 +111,16 @@ enum Next {
     Again(Duration),
 }
 
-/// Works until the sender is gone and nothing is left to do.
-pub fn run<T: Transport>(armory: &Armory<T>, requests: Receiver<Request>, patience: Patience, found: &dyn Fn(Found)) {
+/// Works until the sender is gone and nothing is left to do. `allowed` is
+/// asked before every request: when the player turns the lookups off, what is
+/// left of the fight's lookups is dropped and nothing more is sent.
+pub fn run<T: Transport>(
+    armory: &Armory<T>,
+    requests: Receiver<Request>,
+    patience: Patience,
+    allowed: &dyn Fn() -> bool,
+    found: &dyn Fn(Found),
+) {
     let mut fight: Option<Fight> = None;
     let mut open = true;
     loop {
@@ -133,12 +141,14 @@ pub fn run<T: Transport>(armory: &Armory<T>, requests: Receiver<Request>, patien
             }
         }
         let Some(f) = fight.as_mut() else { continue };
-        if Instant::now() >= f.until {
+        if Instant::now() >= f.until || !allowed() {
             f.jobs.clear();
             continue;
         }
         let Some(t) = f.jobs.pop_front() else { continue };
         if let Next::Again(wait) = step(armory, f, t, &patience, found) {
+            // Never past the fight's time limit.
+            let wait = wait.min(f.until.saturating_duration_since(Instant::now()));
             // A new fight ends the wait (and replaces this one).
             if open {
                 match requests.recv_timeout(wait) {
@@ -187,7 +197,7 @@ fn step<T: Transport>(armory: &Armory<T>, f: &mut Fight, t: Try, patience: &Pati
                 Ok(items) => items,
                 Err(e) => match wait_for(&e, t.tries, patience) {
                     Some(wait) => {
-                        f.jobs.push_front(Try { job: Job::Gear { id, profile }, tries: t.tries + 1 });
+                        f.jobs.push_front(Try { job: Job::Gear { id, profile }, tries: counted(&e, t.tries) });
                         return Next::Again(wait);
                     }
                     // Nothing more will come: the card stops waiting for it.
@@ -209,11 +219,17 @@ fn step<T: Transport>(armory: &Armory<T>, f: &mut Fight, t: Try, patience: &Pati
 fn again(f: &mut Fight, t: Try, e: &Error, patience: &Patience) -> Next {
     match wait_for(e, t.tries, patience) {
         Some(wait) => {
-            f.jobs.push_front(Try { job: t.job, tries: t.tries + 1 });
+            f.jobs.push_front(Try { job: t.job, tries: counted(e, t.tries) });
             Next::Again(wait)
         }
         None => Next::Done,
     }
+}
+
+/// The tries after this error: "too many" is waited out and does not count
+/// against the tries a failing site gets.
+fn counted(e: &Error, tries: u32) -> u32 {
+    if matches!(e, Error::Held { .. }) { tries } else { tries + 1 }
 }
 
 /// How long to wait before asking again, or `None` when asking again would

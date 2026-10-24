@@ -24,14 +24,13 @@ CI runs exactly these on Windows and Linux and keeps `death-recap.exe` with `add
 - Commit game art: class emblems are fetched by `tools/class_icons.py`, icons load from the game's servers at run time.
 - Put anything personal in the code, docs, commits or releases: public name "Flavbest" only, no other players' names (test names are made up: "Sampleton"), no account, character or device ids, no session links.
 - Send anything to the game, read its memory or files, or add telemetry. The only network use beyond the game's icons is the opt-in lookup on the official site.
-- Install a build on Flavbest's PC without asking, or one not built from `main`.
+- Install a build without being asked, or one not built from `main`.
 
 ## Commits and pull requests
 
 The last lines of every commit message and pull request description are
 `Co-Authored-By: Claude <noreply@anthropic.com>` and `Session: Aion 2 - Death recap plugin`.
 
-## Installing on Flavbest's PC
+## Installing a build
 
-- Only a build of `main` after the PR merged and CI passed; ask first.
-- `death-recap.exe` and `addon.json` go to `F:\AI\Aion 2\Addons\Death Recap\`. Replaced files go to `F:\AI\Aion 2\Backups\Death Recap\<date> before <change>\`, recorded in `Backups\README.txt`; the install is recorded in `SESSIONS.md`.
+Only a build of `main` after the PR merged and CI passed, and only when asked. Where it goes, the backups and the record of each install are in the project docs (`flav-toolkit/SESSIONS.md`), not here.

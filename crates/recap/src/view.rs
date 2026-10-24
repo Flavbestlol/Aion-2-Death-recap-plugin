@@ -230,7 +230,7 @@ fn source_ref(names: &dyn Names, skill: i32, d: &crate::Debuff) -> Option<SkillR
 }
 
 fn share(part: i64, whole: i64) -> u8 {
-    if whole <= 0 { 0 } else { ((part * 100 + whole / 2) / whole).clamp(0, 100) as u8 }
+    if whole <= 0 { 0 } else { ((part.saturating_mul(100).saturating_add(whole / 2)) / whole).clamp(0, 100) as u8 }
 }
 
 impl RecapView {

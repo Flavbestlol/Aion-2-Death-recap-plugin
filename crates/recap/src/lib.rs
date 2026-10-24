@@ -1,7 +1,8 @@
 //! Death Recap's logic: every fight on the player, from Flav-Toolkit's events.
 //!
-//! A fight starts with the first hit, dodge, resist or debuff another entity
-//! lands on the player, and ends when the player dies, loses a duel (a duel
+//! A fight starts with the first hit, dodge, resist or crowd control another
+//! entity lands on the player (another debuff joins a fight but does not
+//! start one), and ends when the player dies, loses a duel (a duel
 //! ends at 1 HP), or no one has touched them for `QUIET_MS`. Each finished
 //! fight says who hit the player, with which skills, for how much, and what
 //! controlled them (stuns, roots, knockdowns…) and for how long.
@@ -23,8 +24,8 @@ use flav_events::event::{Buff, Control, MissKind};
 use flav_events::{Event, EventKind};
 use serde::Serialize;
 
-/// A fight ends when no one has hit, missed or debuffed the player for this
-/// long.
+/// A fight ends when no one has hit, missed or crowd-controlled the player
+/// for this long.
 pub const QUIET_MS: i64 = 15_000;
 
 /// Hits that land this soon after a death or a duel's end belong to that
@@ -146,7 +147,7 @@ impl Debuff {
     fn from_buff(b: &Buff, at_ms: i64) -> Debuff {
         Debuff {
             from_ms: at_ms,
-            to_ms: b.length_ms.map(|l| at_ms + l),
+            to_ms: b.length_ms.map(|l| at_ms.saturating_add(l)),
             abnormal: b.abnormal,
             name: b.name.clone(),
             icon: b.icon.clone(),
@@ -266,6 +267,12 @@ pub struct Recorder {
 /// game sends the player's HP when it changes; none for this long means it
 /// did not (a heal at full HP).
 const HP_WAIT_MS: i64 = 3_000;
+/// The most hits one fight keeps (endless combat): past it the oldest go,
+/// as a recap is about the end of a fight.
+const MAX_HITS: usize = 50_000;
+/// The most players whose combat power is kept: past it the list starts
+/// again (the game sends it again when they come into view).
+const MAX_PROFILES: usize = 20_000;
 
 /// What the player's HP did after hits that may be heals.
 #[derive(Clone, Copy)]
@@ -379,6 +386,9 @@ impl Recorder {
                 }
             }
             EventKind::PlayerProfile { id, combat_power, server, legion } => {
+                if self.profiles.len() >= MAX_PROFILES && !self.profiles.contains_key(id) {
+                    self.profiles.clear();
+                }
                 let p = self.profiles.entry(*id).or_default();
                 p.combat_power = combat_power.or(p.combat_power);
                 p.server = server.or(p.server);
@@ -460,7 +470,7 @@ impl Recorder {
                         }
                     } else {
                         // Refreshed: its length now runs from when it began.
-                        open.debuffs[i].to_ms = b.length_ms.map(|l| open.debuffs[i].from_ms + l);
+                        open.debuffs[i].to_ms = b.length_ms.map(|l| open.debuffs[i].from_ms.saturating_add(l));
                     }
                 }
             }
@@ -497,6 +507,9 @@ impl Recorder {
                 }
             }
             EventKind::Died { id } if Some(*id) == self.me && self.open.is_some() => {
+                // Dead: the HP record of 0 that may follow is the same death,
+                // not a second one.
+                self.hp = Some(0);
                 done.extend(self.end(Outcome::Died, e.at_ms));
             }
             _ => {}
@@ -637,6 +650,9 @@ impl Recorder {
         let open = self.open_at(e.at_ms);
         if let Some(h) = hit_on_me(e) {
             // A hit decided late goes in at its time.
+            if open.hits.len() >= MAX_HITS {
+                open.hits.remove(0);
+            }
             let at = open.hits.partition_point(|x| x.at_ms <= h.at_ms);
             open.hits.insert(at, h);
         }
@@ -779,7 +795,7 @@ impl Recorder {
             // old (regeneration is not always sent).
             hp_before: open
                 .first_hp
-                .map(|(hp, dmg)| hp + dmg as i32)
+                .map(|(hp, dmg)| hp.saturating_add(i32::try_from(dmg).unwrap_or(i32::MAX)))
                 .map(|hp| self.max_hp.map_or(hp, |max| hp.min(max)))
                 .or(open.hp_before),
             lowest_hp: open.lowest_hp,

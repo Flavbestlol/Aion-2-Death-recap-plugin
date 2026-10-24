@@ -1,12 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "What Death Recap's pages may do: listen to its events and call its own commands.",
-  "windows": [
-    "overlay",
-    "settings"
-  ],
-  "permissions": [
-    "core:default"
-  ]
+  "description": "What Death Recap's two pages may do through Tauri: listen to the events Death Recap sends them (the settings page also hears its own window's focus). Death Recap's own commands need no permission here; nothing else (files, shell, opener, other windows) is granted.",
+  "windows": ["overlay", "settings"],
+  "permissions": ["core:event:allow-listen", "core:event:allow-unlisten"]
 }

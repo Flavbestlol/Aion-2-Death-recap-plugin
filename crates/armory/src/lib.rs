@@ -273,7 +273,10 @@ impl<T: Transport> Armory<T> {
         let answer = self.fetch(name, &server);
         // "Too many" and network trouble are not answers about the character.
         if !matches!(answer, Err(Error::Held { .. } | Error::Network(_) | Error::Status(_))) {
-            self.lock().cache.insert(key, (Instant::now(), answer.clone()));
+            let mut state = self.lock();
+            let keep = self.pace.keep;
+            state.cache.retain(|_, (at, _)| at.elapsed() < keep);
+            state.cache.insert(key, (Instant::now(), answer.clone()));
         }
         answer
     }
@@ -296,7 +299,10 @@ impl<T: Transport> Armory<T> {
             ))
             .map(|v| items(&v));
         if !matches!(answer, Err(Error::Held { .. } | Error::Network(_) | Error::Status(_))) {
-            self.lock().gear.insert(key, (Instant::now(), answer.clone()));
+            let mut state = self.lock();
+            let keep = self.pace.keep;
+            state.gear.retain(|_, (at, _)| at.elapsed() < keep);
+            state.gear.insert(key, (Instant::now(), answer.clone()));
         }
         answer
     }
@@ -321,9 +327,9 @@ impl<T: Transport> Armory<T> {
                 let server_id = one["serverId"].as_u64().and_then(|s| u16::try_from(s).ok()).ok_or(Error::NotFound)?;
                 self.lookup(name, server_id)
             }
-            many => {
-                Err(Error::Ambiguous(many.iter().filter_map(|h| h["serverId"].as_u64().map(|s| s as u16)).collect()))
-            }
+            many => Err(Error::Ambiguous(
+                many.iter().filter_map(|h| h["serverId"].as_u64().and_then(|s| u16::try_from(s).ok())).collect(),
+            )),
         }
     }
 
@@ -363,6 +369,8 @@ impl<T: Transport> Armory<T> {
     fn get(&self, url: &str) -> Result<Value, Error> {
         {
             let mut state = self.lock();
+            // The lock is held through the wait on purpose: it is what keeps
+            // the requests one at a time, a gap apart, whoever asks.
             if let Some(until) = state.held_until {
                 let now = Instant::now();
                 if now < until {

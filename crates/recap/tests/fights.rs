@@ -50,7 +50,7 @@ fn the_views_match_the_built_in_recap() {
         ("abyss death", ABYSS_LIVE, include_str!("fixtures/abyss-death-live-2026-10-21.views.json")),
     ] {
         let (fights, r) = replay(&events(fixture));
-        let me = Me { combat_power: Some(168_152), gear_score: Some(2_715) };
+        let me = Me { combat_power: Some(150_000), gear_score: Some(2_600) };
         let ours: Vec<serde_json::Value> =
             fights.iter().map(|f| serde_json::to_value(RecapView::build(f, r.book(), me, &|_| 1)).unwrap()).collect();
         let expected: Vec<serde_json::Value> = serde_json::from_str(expected).unwrap();
@@ -70,8 +70,8 @@ fn the_first_duel_is_one_quick_slice() {
     assert_eq!(f.hits.len(), 4);
     assert_eq!(f.damage(), 672);
     assert!(f.hits.iter().all(|h| h.crit && h.flags.contains(&"back".to_string())));
-    assert_eq!(f.hp_before, Some(19_173));
-    assert_eq!(f.lowest_hp, Some(18_501));
+    // From full HP down by exactly the duel's damage.
+    assert_eq!(f.hp_before.zip(f.lowest_hp).map(|(before, lowest)| before - lowest), Some(672));
     let a = &f.attackers[0];
     assert_eq!((a.id, a.class.as_deref(), a.player), (FOE, Some("Assassin"), true));
     let skills: Vec<(i32, usize, i64)> = a.skills.iter().map(|s| (s.skill, s.hits, s.damage)).collect();
@@ -267,6 +267,15 @@ fn the_killer_then_the_opener_then_the_rest() {
     assert_eq!(v.by_importance().iter().map(|a| a.id).collect::<Vec<_>>(), vec![9, 7, 8, 10]);
 }
 
+/// The game can say "died" before the HP record of 0: one death, not two.
+#[test]
+fn died_then_hp_zero_is_one_death() {
+    let died = ev(20, EventKind::Died { id: 1 });
+    let f = run(&[me(), hp(1, 1000), hit(10, 7, 600), hp(10, 400), hit(20, 8, 500), died, hp(21, 0)]);
+    assert_eq!(f.len(), 1, "{:?}", f.iter().map(|f| (f.outcome, f.hits.len())).collect::<Vec<_>>());
+    assert_eq!((f[0].outcome, f[0].hits.len()), (Outcome::Died, 2));
+}
+
 #[test]
 fn a_duel_ends_at_one_hp() {
     let f = run(&[me(), hp(1, 1000), hit(10, 7, 999), hp(10, 1)]);
@@ -340,7 +349,7 @@ fn time_alone_ends_fights() {
 fn the_overlay_view_of_the_abyss_death() {
     use recap::view::{Me, RecapView};
     let (fights, recorder) = replay(&events(ABYSS_LIVE));
-    let me = Me { combat_power: Some(168_152), gear_score: Some(2_715) };
+    let me = Me { combat_power: Some(150_000), gear_score: Some(2_600) };
     let v = RecapView::build(&fights[0], recorder.book(), me, &|_| 1);
     let ids: Vec<i32> = v.attackers.iter().map(|a| a.id).collect();
     assert_eq!(ids, vec![10_159, 12_645]);

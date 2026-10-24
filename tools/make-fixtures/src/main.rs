@@ -20,8 +20,9 @@ use std::path::{Path, PathBuf};
 use flav_core::{Engine, Event as CoreEvent, EventKind as CoreKind};
 use serde_json::Value;
 
-const ME_CP: i64 = 168_152;
-const ME_GS: i32 = 2_715;
+/// The player's own combat power and gear score in the views: made-up numbers.
+const ME_CP: i64 = 150_000;
+const ME_GS: i32 = 2_600;
 
 fn frames(text: &str) -> Vec<(i64, Vec<u8>)> {
     text.lines()

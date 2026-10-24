@@ -91,7 +91,7 @@ fn run(armory: &Armory<Site>, requests: Vec<Request>) -> Vec<Found> {
     }
     drop(tx);
     let found = Mutex::new(Vec::new());
-    lookups::run(armory, rx, quick(), &|f| found.lock().unwrap().push(f));
+    lookups::run(armory, rx, quick(), &|| true, &|f| found.lock().unwrap().push(f));
     found.into_inner().unwrap()
 }
 
@@ -172,7 +172,7 @@ fn a_new_fight_takes_over() {
         tx.send(Request { fight_id: 2, players: players(&["New"]), region: None }).unwrap();
     });
     let found = Mutex::new(Vec::new());
-    lookups::run(&armory, rx, quick(), &|f| found.lock().unwrap().push(f));
+    lookups::run(&armory, rx, quick(), &|| true, &|f| found.lock().unwrap().push(f));
     sender.join().unwrap();
     let found = found.into_inner().unwrap();
     assert_eq!(
@@ -180,4 +180,46 @@ fn a_new_fight_takes_over() {
         vec![(2, 1, false), (2, 1, true)]
     );
     assert!(!site.asked().contains(&"search Older".to_string()));
+}
+
+/// Turned off by the player: what is left is dropped, nothing more is sent.
+#[test]
+fn turning_the_lookups_off_stops_them() {
+    let site = Site::default();
+    let armory = armory(&site, Duration::ZERO);
+    let (tx, rx) = channel();
+    tx.send(Request { fight_id: 1, players: players(&["First", "Second", "Third"]), region: None }).unwrap();
+    drop(tx);
+    let on = std::sync::atomic::AtomicBool::new(true);
+    let found = Mutex::new(Vec::new());
+    lookups::run(&armory, rx, quick(), &|| on.load(std::sync::atomic::Ordering::Relaxed), &|f| {
+        // Off as soon as the first answer is in.
+        on.store(false, std::sync::atomic::Ordering::Relaxed);
+        found.lock().unwrap().push(f);
+    });
+    assert_eq!(found.into_inner().unwrap().len(), 1);
+    assert_eq!(site.asked(), vec!["search First", "info First"], "nothing after the switch");
+}
+
+/// "Too many" is waited out without using up the tries a failing site gets.
+#[test]
+fn too_many_does_not_use_up_the_tries() {
+    let site = Site::default().failing("Killer", &[429, 429, 429, 429, 429, 503, 503]);
+    let found =
+        run(&armory(&site, Duration::ZERO), vec![Request { fight_id: 1, players: players(&["Killer"]), region: None }]);
+    assert!(found.iter().any(|f| f.id == 1), "found after 5 refusals and 2 failures (4 tries)");
+}
+
+/// A fight's lookups stop at its time limit, even in the middle of a wait.
+#[test]
+fn the_time_limit_holds_during_a_wait() {
+    let site = Site::default().failing("Killer", &[429; 50]);
+    let armory = armory(&site, Duration::from_secs(60));
+    let (tx, rx) = channel();
+    tx.send(Request { fight_id: 1, players: players(&["Killer"]), region: None }).unwrap();
+    drop(tx);
+    let patience = Patience { give_up_after: Duration::from_millis(200), ..quick() };
+    let started = std::time::Instant::now();
+    lookups::run(&armory, rx, patience, &|| true, &|_| {});
+    assert!(started.elapsed() < Duration::from_secs(5), "a 60 s hold is cut at the 200 ms limit");
 }

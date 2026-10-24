@@ -29,19 +29,31 @@ pub struct Skill {
 }
 
 /// Bounds, so a session of many hours cannot grow these without end: past
-/// them half of what is known is forgotten (ids are reused anyway).
+/// them the half learned longest ago is forgotten (ids are reused anyway).
 const MAX_ENTITIES: usize = 50_000;
 const MAX_SKILLS: usize = 20_000;
+const MAX_NPC_CODES: usize = 20_000;
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct Book {
-    names: HashMap<i32, String>,
+    names: Bounded<String>,
     /// By entity id.
-    npcs: HashMap<i32, Npc>,
+    npcs: Bounded<Npc>,
     /// By NPC code: name and boss.
-    npc_codes: HashMap<i32, (Option<String>, bool)>,
+    npc_codes: Bounded<(Option<String>, bool)>,
     /// By skill id as the events carry it.
-    skills: HashMap<i32, Skill>,
+    skills: Bounded<Skill>,
+}
+
+impl Default for Book {
+    fn default() -> Self {
+        Book {
+            names: Bounded::new(MAX_ENTITIES),
+            npcs: Bounded::new(MAX_ENTITIES),
+            npc_codes: Bounded::new(MAX_NPC_CODES),
+            skills: Bounded::new(MAX_SKILLS),
+        }
+    }
 }
 
 impl Book {
@@ -49,11 +61,9 @@ impl Book {
     pub fn learn(&mut self, e: &Event) {
         match &e.kind {
             EventKind::Name { id, name, .. } if !name.is_empty() => {
-                bound(&mut self.names, MAX_ENTITIES);
                 self.names.insert(*id, name.clone());
             }
             EventKind::NpcIdentified { id, npc, name, boss } => {
-                bound(&mut self.npcs, MAX_ENTITIES);
                 self.npcs.insert(*id, Npc { code: *npc, name: name.clone(), boss: *boss });
                 if name.is_some() || *boss {
                     self.npc_codes.insert(*npc, (name.clone(), *boss));
@@ -83,8 +93,7 @@ impl Book {
     }
 
     fn learn_skill(&mut self, skill: i32, name: &Option<String>, icon: &Option<String>) {
-        bound(&mut self.skills, MAX_SKILLS);
-        let s = self.skills.entry(skill).or_default();
+        let s = self.skills.entry(skill);
         s.name = name.clone().or(s.name.take());
         s.icon = icon.clone().or(s.icon.take());
     }
@@ -124,12 +133,77 @@ impl crate::view::Names for Book {
     }
 }
 
-fn bound<V>(map: &mut HashMap<i32, V>, max: usize) {
-    if map.len() >= max {
-        let mut keys: Vec<i32> = map.keys().copied().collect();
-        keys.sort_unstable();
-        for k in keys.into_iter().take(max / 2) {
-            map.remove(&k);
+/// A map by id that keeps at most `max` entries: when full, the half
+/// learned (or relearned) longest ago is forgotten.
+#[derive(Debug, Clone)]
+struct Bounded<V> {
+    map: HashMap<i32, (u64, V)>,
+    next: u64,
+    max: usize,
+}
+
+impl<V: Default> Bounded<V> {
+    fn entry(&mut self, id: i32) -> &mut V {
+        if !self.map.contains_key(&id) {
+            self.make_room();
         }
+        self.next += 1;
+        let stamp = self.next;
+        let slot = self.map.entry(id).or_insert_with(|| (stamp, V::default()));
+        slot.0 = stamp;
+        &mut slot.1
+    }
+}
+
+impl<V> Bounded<V> {
+    fn new(max: usize) -> Self {
+        Bounded { map: HashMap::new(), next: 0, max: max.max(2) }
+    }
+
+    fn insert(&mut self, id: i32, value: V) {
+        if !self.map.contains_key(&id) {
+            self.make_room();
+        }
+        self.next += 1;
+        self.map.insert(id, (self.next, value));
+    }
+
+    fn get(&self, id: &i32) -> Option<&V> {
+        self.map.get(id).map(|(_, v)| v)
+    }
+
+    #[cfg(test)]
+    fn len(&self) -> usize {
+        self.map.len()
+    }
+
+    fn make_room(&mut self) {
+        if self.map.len() < self.max {
+            return;
+        }
+        let mut stamps: Vec<u64> = self.map.values().map(|(stamp, _)| *stamp).collect();
+        stamps.sort_unstable();
+        let keep_from = stamps[stamps.len() / 2];
+        self.map.retain(|_, (stamp, _)| *stamp >= keep_from);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Full: the oldest half goes, the names learned last stay, whatever
+    /// their ids.
+    #[test]
+    fn the_oldest_are_forgotten_first() {
+        let mut b: Bounded<String> = Bounded::new(4);
+        for id in [900, 800, 700, 600] {
+            b.insert(id, id.to_string());
+        }
+        b.insert(5, "new".into());
+        assert!(b.len() <= 4);
+        assert_eq!(b.get(&5).map(String::as_str), Some("new"));
+        assert_eq!(b.get(&600).map(String::as_str), Some("600"), "learned last, kept");
+        assert!(b.get(&900).is_none(), "learned first, forgotten");
     }
 }
