@@ -249,6 +249,24 @@ fn a_death_ends_the_fight_on_the_final_blow() {
     assert_eq!(f[0].attackers.iter().map(|a| a.id).collect::<Vec<_>>(), vec![7, 8], "most damage first");
 }
 
+/// The lookups and the faces on the bar go killer first, then whoever
+/// opened the fight, then the rest by damage.
+#[test]
+fn the_killer_then_the_opener_then_the_rest() {
+    use recap::view::{Me, RecapView};
+    let events =
+        [me(), hp(1, 10_000), hit(10, 7, 100), hit(500, 8, 5_000), hit(600, 10, 3_000), hit(700, 9, 1_000), hp(700, 0)];
+    let mut r = Recorder::new();
+    let mut fights = Vec::new();
+    for e in &events {
+        fights.extend(r.push(e));
+    }
+    fights.extend(r.finish());
+    let v = RecapView::build(&fights[0], r.book(), Me::default(), &|_| 0);
+    assert_eq!(v.attackers.iter().map(|a| a.id).collect::<Vec<_>>(), vec![8, 10, 9, 7], "the table: most damage first");
+    assert_eq!(v.by_importance().iter().map(|a| a.id).collect::<Vec<_>>(), vec![9, 7, 8, 10]);
+}
+
 #[test]
 fn a_duel_ends_at_one_hp() {
     let f = run(&[me(), hp(1, 1000), hit(10, 7, 999), hp(10, 1)]);
@@ -331,6 +349,8 @@ fn the_overlay_view_of_the_abyss_death() {
     assert_eq!(r.opener.as_ref().map(|s| s.name.as_str()), Some("Spiral Arrow"));
     assert_eq!(g.opener.as_ref().map(|s| s.name.as_str()), Some("Flash Slice"));
     assert!(g.killer && !r.killer);
+    // Who killed you, then who opened: the Assassin before the Ranger.
+    assert_eq!(v.by_importance().iter().map(|a| a.id).collect::<Vec<_>>(), vec![12_645, 10_159]);
     assert_eq!(v.final_blow.as_ref().map(|f| (f.skill.name.as_str(), f.damage)), Some(("Flash Slice", 647)));
     // Two knockbacks, from two abilities: each one says which.
     let cc: Vec<(&str, &str, usize)> =

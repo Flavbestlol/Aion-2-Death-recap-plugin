@@ -27,6 +27,18 @@ impl History {
     }
 }
 
+/// How Death Recap looks.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "snake_case")]
+pub enum Theme {
+    /// The HUD look every Flav-Toolkit add-on shares: warm white and gold on
+    /// dark glass, rounded, round portraits.
+    #[default]
+    Hud,
+    /// The game's own look: charcoal, square corners, teal, the game's font.
+    Game,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Settings {
@@ -36,16 +48,12 @@ pub struct Settings {
     pub history: History,
     /// Show survived fights too, not only deaths and lost duels.
     pub every_fight: bool,
-    /// The skull icon by the minimap (shown while the game is in front): a
-    /// click opens the last recap, a right-click the settings.
-    pub icon: bool,
-    /// Where the player put that icon (screen pixels, its top left corner).
-    pub icon_at: Option<(i32, i32)>,
+    pub theme: Theme,
 }
 
 impl Default for Settings {
     fn default() -> Self {
-        Settings { online_lookups: false, history: History::Session, every_fight: false, icon: true, icon_at: None }
+        Settings { online_lookups: false, history: History::Session, every_fight: false, theme: Theme::Hud }
     }
 }
 
@@ -107,12 +115,30 @@ mod tests {
         .unwrap();
         let s = Settings::load(&ours, Some(&core));
         assert!(s.online_lookups);
-        assert_eq!((s.history, s.icon_at), (History::Day, Some((1500, 12))));
+        assert_eq!((s.history, s.theme), (History::Day, Theme::Hud), "the HUD look unless chosen");
         // Its own file now; a change in the core's no longer matters.
         std::fs::write(core.join("settings.json"), r#"{"online_lookups":false}"#).unwrap();
         assert!(Settings::load(&ours, Some(&core)).online_lookups);
         let _ = std::fs::remove_dir_all(&ours);
         let _ = std::fs::remove_dir_all(&core);
+    }
+
+    /// A file from 0.2.0 (with the skull icon's settings, gone since) keeps
+    /// every choice it can.
+    #[test]
+    fn a_file_from_before_keeps_its_choices() {
+        let ours = dir("before");
+        std::fs::write(
+            Settings::path(&ours),
+            r#"{"online_lookups":true,"history":"three_days","every_fight":true,"icon":false,"icon_at":[10,10]}"#,
+        )
+        .unwrap();
+        let s = Settings::load(&ours, None);
+        assert_eq!(
+            s,
+            Settings { online_lookups: true, history: History::ThreeDays, every_fight: true, theme: Theme::Hud }
+        );
+        let _ = std::fs::remove_dir_all(&ours);
     }
 
     #[test]

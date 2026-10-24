@@ -10,12 +10,14 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
+use std::sync::mpsc::{Sender, channel};
 use std::time::{Duration, Instant};
 
 use flav_sdk::{Client, Config, Error, Event, EventKind, LogLevel, Message, NoteIcon, NoteLevel, Show};
 use recap::view::{Kill, Me, RecapView};
 use recap::{Fight, Outcome, Recorder};
 
+use crate::lookups::{self, Found, Patience, Player, Request};
 use crate::store::{Extra, Recap, Shared, lock};
 
 /// The event types the recap reads: who is who, the player's HP and death,
@@ -89,6 +91,7 @@ struct Reading {
 /// Runs until `stop` says so (never, in the app), connecting again whenever
 /// Flav-Toolkit is not there.
 pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: &dyn Fn() -> bool) {
+    let lookups = start_lookups(&shared, &screen);
     let mut recorder = Recorder::new();
     let mut reading = Reading::default();
     let mut clock = Clock::default();
@@ -117,7 +120,7 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                 Ok(Some(Message::Event(e))) => {
                     clock.saw(e.at_ms);
                     for f in step(&mut recorder, &mut reading, &*screen, &e) {
-                        ended(&shared, &screen, &mut recorder, &mut reading, &mut client, f);
+                        ended(&shared, &*screen, &lookups, &mut recorder, &mut reading, &mut client, f);
                     }
                 }
                 Ok(Some(Message::Status(s))) => set_status(&shared, &*screen, &format!("Connected: {}", s.text)),
@@ -127,7 +130,7 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                 Ok(None) => {
                     if let Some(now) = clock.now() {
                         for f in recorder.tick(now) {
-                            ended(&shared, &screen, &mut recorder, &mut reading, &mut client, f);
+                            ended(&shared, &*screen, &lookups, &mut recorder, &mut reading, &mut client, f);
                         }
                     }
                 }
@@ -152,6 +155,75 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
             }
         }
     }
+}
+
+/// Death Recap's note on a death or a lost duel.
+#[derive(Debug, Clone, PartialEq)]
+pub struct DeathNote {
+    /// What the dock's tip and the hub show first: who, and how strong.
+    pub title: String,
+    /// The class, the power against yours, the final blow.
+    pub text: String,
+    pub icon: NoteIcon,
+}
+
+/// The note for a fight that ended in a death or a lost duel:
+/// *Killed by Sampleton · 140.6K CP*, then *Assassin · 140,596 combat power,
+/// 20% above yours · Flash Slice 5,677 crit*.
+pub fn death_note(view: &RecapView) -> Option<DeathNote> {
+    let duel = match view.outcome {
+        Outcome::Died => false,
+        Outcome::DuelLost => true,
+        Outcome::Survived => return None,
+    };
+    let k = view.attackers.iter().find(|a| a.killer).or(view.attackers.first())?;
+    let cp = k.combat_power.filter(|_| k.monster.is_none());
+    let power = cp.map(|cp| format!(" · {} CP", short(cp))).unwrap_or_default();
+    let title = if duel { format!("Duel lost to {}{power}", k.name) } else { format!("Killed by {}{power}", k.name) };
+
+    let mut text = Vec::new();
+    match (&k.monster, &k.class) {
+        (Some(m), _) => text.push(if m.boss { "Boss".to_string() } else { "Monster".to_string() }),
+        (None, Some(class)) => text.push(class.clone()),
+        (None, None) => {}
+    }
+    if let Some(cp) = cp {
+        let vs = match k.combat_power_vs_me {
+            Some(p) if p > 0 => format!(", {p}% above yours"),
+            Some(p) if p < 0 => format!(", {}% below yours", -p),
+            Some(_) => ", the same as yours".to_string(),
+            None => String::new(),
+        };
+        text.push(format!("{} combat power{vs}", thousands(cp)));
+    }
+    let blow = view.final_blow.as_ref();
+    if let Some(b) = blow {
+        text.push(format!("{} {}{}", b.skill.name, thousands(b.damage), if b.crit { " crit" } else { "" }));
+    }
+    let icon = match (&k.class, blow.and_then(|b| b.skill.icon.clone())) {
+        (Some(class), _) if k.player => NoteIcon::Class(class.clone()),
+        (_, Some(url)) => NoteIcon::Url(url),
+        _ => NoteIcon::Addon,
+    };
+    Some(DeathNote { title, text: text.join(" · "), icon })
+}
+
+/// 140596 → `140.6K`, as the overlay writes it.
+fn short(n: i64) -> String {
+    if n >= 1000 { format!("{:.1}K", n as f64 / 1000.0) } else { n.to_string() }
+}
+
+/// 140596 → `140,596`.
+fn thousands(n: i64) -> String {
+    let digits = n.unsigned_abs().to_string();
+    let mut out = String::new();
+    for (i, c) in digits.chars().enumerate() {
+        if i > 0 && (digits.len() - i).is_multiple_of(3) {
+            out.push(',');
+        }
+        out.push(c);
+    }
+    if n < 0 { format!("-{out}") } else { out }
 }
 
 /// The words beside Death Recap in the hub.
@@ -192,8 +264,9 @@ fn step(recorder: &mut Recorder, reading: &mut Reading, screen: &dyn Screen, e: 
 /// A fight ended: who killed you into the history, the view to the screen,
 /// and, when the player turned them on, the lookups on the official site.
 fn ended(
-    shared: &Arc<Shared>,
-    screen: &Arc<dyn Screen>,
+    shared: &Shared,
+    screen: &dyn Screen,
+    lookups: &Sender<Request>,
     recorder: &mut Recorder,
     reading: &mut Reading,
     client: &mut Client,
@@ -249,79 +322,56 @@ fn ended(
     }
     screen.recap(&recap);
 
-    // A note in the hub and on the dock's skull: an alert with the killer's
-    // class emblem (a monster: the final blow's icon), taken back when the
-    // player is up again or the recap is closed. One per fight: a new death
-    // replaces the last one's.
-    if fight.outcome != Outcome::Survived
-        && let Some(k) = recap.view.attackers.iter().find(|a| a.killer).or(recap.view.attackers.first())
-    {
-        let blow = recap.view.final_blow.as_ref();
-        let how = blow.map(|b| format!(" · {}", b.skill.name)).unwrap_or_default();
-        let icon = match (&k.class, blow.and_then(|b| b.skill.icon.clone())) {
-            (Some(class), _) if k.player => NoteIcon::Class(class.clone()),
-            (_, Some(url)) => NoteIcon::Url(url),
-            _ => NoteIcon::Addon,
-        };
-        let title = if fight.outcome == Outcome::DuelLost { "Duel lost" } else { "You died" };
+    // A note in the hub and on the dock's skull: an alert that names the
+    // killer and their power, with their class emblem (a monster: the final
+    // blow's icon), taken back when the player is up again or the recap is
+    // closed. One per fight: a new death replaces the last one's.
+    if let Some(n) = death_note(&recap.view) {
         if let Some(old) = reading.note.take()
-            && old != title
+            && old != n.title
         {
             let _ = client.unnotify(Some(&old));
         }
-        let _ = client.notify(NoteLevel::Alert, title, Some(&format!("{}{how}", k.name)), Some(icon));
-        reading.note = Some(title.to_string());
+        let _ = client.notify(NoteLevel::Alert, &n.title, Some(&n.text), Some(n.icon));
+        reading.note = Some(n.title);
         // A lost duel's recap goes by itself and the player never died: its
         // note comes down with the recap (`closed`).
     }
 
     if lock(&shared.settings).online_lookups {
-        let players: Vec<(i32, String, Option<u16>)> = recap
+        let players = recap
             .view
-            .attackers
-            .iter()
+            .by_importance()
+            .into_iter()
             .filter(|a| a.player && !a.name.starts_with('#'))
-            .map(|a| (a.id, a.name.clone(), a.server.or_else(|| reading.server_of.get(&a.name).copied())))
+            .map(|a| Player {
+                id: a.id,
+                name: a.name.clone(),
+                server: a.server.or_else(|| reading.server_of.get(&a.name).copied()),
+            })
             .collect();
         let region = reading.my_server.and_then(armory::server).map(|s| s.region);
-        let (shared, screen, fight_id) = (shared.clone(), screen.clone(), recap.fight_id);
-        std::thread::spawn(move || look_up(&shared, &*screen, fight_id, players, region));
+        let _ = lookups.send(Request { fight_id: recap.fight_id, players, region });
     }
 }
 
-/// Gear score, portrait and gear of each attacker, from the official site,
-/// one after the other (the armory paces its requests).
-fn look_up(
-    shared: &Shared,
-    screen: &dyn Screen,
-    fight_id: i64,
-    players: Vec<(i32, String, Option<u16>)>,
-    region: Option<String>,
-) {
-    for (id, name, server) in players {
-        let profile = match (server, &region) {
-            (Some(s), _) => shared.armory.lookup(&name, s),
-            (None, Some(r)) => shared.armory.lookup_in_region(&name, r),
-            (None, None) => continue,
-        };
-        let Ok(profile) = profile else { continue };
-        let items = shared.armory.equipment(&profile).unwrap_or_default();
-        let page = armory::page_url(&profile);
-        if let Some(page) = &page {
-            lock(&shared.pages).insert((fight_id, id), page.clone());
-        }
-        let extra = Extra {
-            gear_score: profile.gear_score,
-            combat_power: Some(profile.combat_power),
-            portrait: profile.portrait.clone(),
-            items,
-            page: page.is_some(),
-        };
-        if let Some(last) = lock(&shared.last).as_mut()
-            && last.fight_id == fight_id
-        {
-            last.extras.insert(id, extra.clone());
-        }
-        screen.extra(fight_id, id, &extra);
-    }
+/// The lookups' worker: what it finds goes into the last recap and to the
+/// screen as it comes.
+fn start_lookups(shared: &Arc<Shared>, screen: &Arc<dyn Screen>) -> Sender<Request> {
+    let (tx, rx) = channel();
+    let (shared, screen) = (shared.clone(), screen.clone());
+    let _ = std::thread::Builder::new().name("recap-lookups".into()).spawn(move || {
+        lookups::run(&shared.armory, rx, Patience::default(), &|f: Found| {
+            if let Some(page) = f.page {
+                lock(&shared.pages).insert((f.fight_id, f.id), page);
+            }
+            if let Some(last) = lock(&shared.last).as_mut()
+                && last.fight_id == f.fight_id
+            {
+                last.extras.insert(f.id, f.extra.clone());
+            }
+            screen.extra(f.fight_id, f.id, &f.extra);
+        });
+    });
+    tx
 }

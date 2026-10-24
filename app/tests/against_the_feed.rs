@@ -80,7 +80,7 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
             // player stands up again, and the player presses Settings.
             (None, Some(c)) => {
                 if c.note.as_deref() == Some("1 fight recorded")
-                    && let Some(n) = c.notes.iter().find(|n| n.title == "You died")
+                    && let Some(n) = c.notes.iter().find(|n| n.title.starts_with("Killed by "))
                 {
                     *found = Some((c.types.clone(), n.clone()));
                     feed.publish(&Event {
@@ -93,7 +93,7 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
             }
             // Then: the note taken back, and Settings reached it.
             (Some(_), Some(c)) => {
-                (c.notes.iter().all(|n| n.title != "You died") && !seen.shown.lock().unwrap().is_empty())
+                (c.notes.iter().all(|n| !n.title.starts_with("Killed by ")) && !seen.shown.lock().unwrap().is_empty())
                     || Instant::now() > deadline
             }
             _ => Instant::now() > deadline,
@@ -109,15 +109,29 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
     assert_eq!(v.final_blow.as_ref().map(|b| (b.skill.name.as_str(), b.damage)), Some(("Flash Slice", 647)));
     assert_eq!(v.damage, 22_992);
 
+    // With the killer's combat power known (it comes with them into view),
+    // the note says it, against the player's.
+    let mut known = v.clone();
+    let k = known.attackers.iter_mut().find(|a| a.killer).unwrap();
+    (k.name, k.combat_power, k.combat_power_vs_me) = ("Sampleton".into(), Some(140_596), Some(20));
+    let n = reader::death_note(&known).unwrap();
+    assert_eq!(n.title, "Killed by Sampleton · 140.6K CP");
+    assert_eq!(n.text, "Assassin · 140,596 combat power, 20% above yours · Flash Slice 647");
+    known.outcome = recap::Outcome::DuelLost;
+    assert_eq!(reader::death_note(&known).unwrap().title, "Duel lost to Sampleton · 140.6K CP");
+    known.outcome = recap::Outcome::Survived;
+    assert!(reader::death_note(&known).is_none(), "no note for a fight survived");
+
     let (types, note) = in_hub.lock().unwrap().clone().expect("Death Recap's line and note in the hub");
     assert_eq!(types, reader::TYPES);
     assert_eq!(note.level, NoteLevel::Alert);
     // The fixture has ids only: the killer is "#12645", an Assassin, with Flash Slice.
-    assert_eq!(note.text.as_deref(), Some("#12645 · Flash Slice"));
+    assert_eq!(note.title, "Killed by #12645");
+    assert_eq!(note.text.as_deref(), Some("Assassin · Flash Slice 647"));
     assert_eq!(note.icon, Some(NoteIcon::Class("Assassin".into())));
     assert_eq!(*seen.shown.lock().unwrap(), vec![Show::Settings], "the hub's Settings reached Death Recap");
     assert!(
-        feed.clients().iter().all(|c| c.notes.iter().all(|n| n.title != "You died")),
+        feed.clients().iter().all(|c| c.notes.iter().all(|n| !n.title.starts_with("Killed by "))),
         "the note came down when the player was up again"
     );
     let _ = std::fs::remove_dir_all(&core_dir);

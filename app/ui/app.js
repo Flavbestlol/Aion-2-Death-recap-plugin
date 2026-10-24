@@ -1,7 +1,7 @@
 // The Death Recap overlay: shows what the reader sends ("recap", then
-// "extra" for each attacker the official site describes), drops the details
-// down while Alt is held, and hides when you are back on your feet.
-// Every name and number goes in as text, never as markup.
+// "extra" for each attacker the official site describes, as it comes), drops
+// the details down while Alt is held, and hides when you are back on your
+// feet. Every name and number goes in as text, never as markup.
 
 (() => {
   const tauri = window.__TAURI__;
@@ -57,6 +57,53 @@
   const classIcon = (code) => (code ? `img/class/${code}.png` : "");
   const extraOf = (id) => recap?.extras?.[id] || {};
   const attacker = (id) => recap?.view.attackers.find((a) => a.id === id);
+  // Who killed you, then who opened the fight (the earliest to join), then
+  // the rest by damage: the order of the faces on the bar, and the order the
+  // lookups go in (RecapView::by_importance).
+  const byImportance = (v) => {
+    const k = v.attackers.findIndex((a) => a.killer);
+    let o = -1;
+    v.attackers.forEach((a, i) => {
+      if (i !== k && a.joined_ms != null && (o < 0 || a.joined_ms < v.attackers[o].joined_ms)) o = i;
+    });
+    const first = [k, o].filter((i) => i >= 0);
+    return [...first.map((i) => v.attackers[i]), ...v.attackers.filter((_, i) => !first.includes(i))];
+  };
+
+  // Portraits come from the official site's image server, which sometimes
+  // refuses when many are asked at once. Each is loaded aside; until it is
+  // in, the class emblem stands in, and a refused one is asked again a few
+  // seconds later, then less often, until it comes.
+  const portraits = new Map();
+  const RETRY_S = [2, 4, 8, 15, 30, 60, 120];
+  function portraitReady(url) {
+    const state = portraits.get(url);
+    if (state === "ok") return true;
+    if (state == null) loadPortrait(url, 0);
+    return false;
+  }
+  function loadPortrait(url, n) {
+    portraits.set(url, "waiting");
+    const im = new Image();
+    im.onload = () => { portraits.set(url, "ok"); rerender(); };
+    im.onerror = () => {
+      if (n < RETRY_S.length) setTimeout(() => loadPortrait(url, n + 1), RETRY_S[n] * 1000);
+      else portraits.set(url, "failed");
+    };
+    im.src = url;
+  }
+  let rerenderAt = 0;
+  function rerender() {
+    if (rerenderAt) return;
+    rerenderAt = requestAnimationFrame(() => {
+      rerenderAt = 0;
+      if (!recap) return;
+      renderBar();
+      renderRows();
+      refreshGear();
+      fit();
+    });
+  }
 
   // A monster's mark: the game has no monster portraits Death Recap can
   // show, so claw marks, and horns with a gold frame for a boss.
@@ -80,7 +127,7 @@
   };
   const face = (a, cl) => {
     const ex = extraOf(a.id);
-    if (ex.portrait) return img(ex.portrait, a.name, "face");
+    if (ex.portrait && portraitReady(ex.portrait)) return img(ex.portrait, a.name, "face");
     if (a.monster) return monsterFace(a);
     const el = img(classIcon(a.class_code), a.class || a.name, "face emblem");
     if (cl) el.classList.add(cl);
@@ -149,7 +196,7 @@
     gs.title = `Gear score${v.me.gear_score ? ` (yours ${int(v.me.gear_score)})` : ""}`;
 
     const faces = $(".faces");
-    faces.replaceChildren(...v.attackers.slice(0, 4).map((a) => face(a)));
+    faces.replaceChildren(...byImportance(v).slice(0, 4).map((a) => face(a)));
     $(".attackers .count").textContent = `×${v.attackers.length}`;
     $(".attackers .dmg").textContent = `${int(v.damage)} · ${secs(v.duration_ms)}`;
     $(".cc-time").textContent = v.cc_ms > 0 ? secs(v.cc_ms) : "0 s";
@@ -263,28 +310,42 @@
   }
 
   // ---- hover cards -------------------------------------------------------
+  // A diamond past +15: the official site's blue mark with its level.
+  const diamond = (n) => h("span", { class: "ex", title: `Diamond ${n}` }, h("b", { text: String(n) }));
+  const itemTitle = (it) => `${it.name} +${it.enchant}${it.exceed ? ` · Diamond ${it.exceed}` : ""} · ${it.grade}`;
+  let gearFor = null;
   function showGear(el) {
     const id = Number(el.dataset.gearFor);
     const a = attacker(id);
     const ex = extraOf(id);
     const card = $(".gear");
-    if (!a || !ex.items || !ex.items.length) { card.hidden = true; return; }
+    // Nothing from the official site (yet): no card.
+    if (!a || (ex.combat_power == null && !(ex.items && ex.items.length))) { card.hidden = true; gearFor = null; return; }
+    gearFor = id;
     const g = ex.gear_score;
-    card.replaceChildren(
+    const items = (ex.items || []).filter((it) => !/^Arcana|^Rune/.test(it.slot)).slice(0, 18);
+    const note = items.length ? "From the official AION 2 site" : ex.gear_ready ? "No gear on the official AION 2 site" : "Gear on its way from the official AION 2 site…";
+    card.replaceChildren(...[
       h("div", { class: "head" }, face(a),
         h("div", {}, h("div", { class: "n", text: a.name }),
           h("div", { class: "s" },
             h("span", {}, img(CP_ICON, "Combat power", "i-cp"), h("span", { text: int(ex.combat_power ?? a.combat_power) })),
             g != null ? h("span", {}, img(GS_ICON, "Gear score", "i-gs"), h("span", { text: int(g) })) : null))),
-      h("div", { class: "grid" }, ex.items.filter((it) => !/^Arcana|^Rune/.test(it.slot)).slice(0, 18).map((it) =>
-        h("div", { class: "it", style: `background:${GRADE[it.grade] || "#3A3F47"}`, title: `${it.name} +${it.enchant}${it.exceed ? ` (+${it.exceed})` : ""} · ${it.grade}` },
-          img(it.icon, it.name), it.enchant ? h("span", { text: `+${it.enchant}` }) : null))),
-      h("div", { class: "note", text: "From the official AION 2 site" }));
+      items.length ? h("div", { class: "grid" }, items.map((it) =>
+        h("div", { class: "it", style: `background:${GRADE[it.grade] || "#3A3F47"}`, title: itemTitle(it) },
+          img(it.icon, it.name), it.exceed ? diamond(it.exceed) : null, it.enchant ? h("span", { class: "en", text: `+${it.enchant}` }) : null))) : null,
+      h("div", { class: `note${items.length || ex.gear_ready ? "" : " waiting"}`, text: note })].filter(Boolean));
     const r = el.getBoundingClientRect();
     card.style.left = `${Math.min(r.left, 900 - 310)}px`;
     card.style.top = `${r.bottom + 6}px`;
     card.hidden = false;
     fit();
+  }
+  // The open gear card again, when more came in for it.
+  function refreshGear() {
+    if (gearFor == null || $(".gear").hidden) return;
+    const el = root.querySelector(`[data-gear-for="${gearFor}"]`);
+    if (el) showGear(el);
   }
 
   function showHistory(el) {
@@ -309,7 +370,7 @@
     if (c && c.dataset.cc) showCc(c);
   });
   root.addEventListener("mouseout", (e) => {
-    if (e.target.closest("[data-gear-for]")) { $(".gear").hidden = true; fit(); }
+    if (e.target.closest("[data-gear-for]")) { $(".gear").hidden = true; gearFor = null; fit(); }
     if (e.target.closest(".kills")) { $(".hist").hidden = true; fit(); }
     if (e.target.closest("[data-cc]")) { $(".ccard").hidden = true; fit(); }
   });
@@ -374,9 +435,7 @@
     if (!recap || recap.fight_id !== m.fight_id) return;
     recap.extras = recap.extras || {};
     recap.extras[m.id] = m.extra;
-    renderBar();
-    renderRows();
-    fit();
+    rerender();
   });
   listen("alt", (e) => {
     altHeld = !!e.payload;
@@ -393,6 +452,11 @@
   });
   listen("close", () => { if (!root.hidden) hide(); });
   listen("revived", () => { if (recap && !root.hidden && recap.view.outcome === "died") hide(); });
+
+  // The look: the HUD (every add-on's) or the game's own; the settings say.
+  const setTheme = (t) => { document.body.dataset.theme = t === "game" ? "game" : "hud"; fit(); };
+  listen("theme", (e) => setTheme(e.payload));
+  invoke("settings_get").then((st) => setTheme(st.settings.theme)).catch(() => {});
 
   // The static icons.
   for (const el of root.querySelectorAll(".i-cp")) el.src = CP_ICON;

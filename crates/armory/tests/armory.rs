@@ -1,5 +1,5 @@
-//! The armory against saved answers from the official site (the project
-//! author's own character, 2026-10-21), with no network.
+//! The armory against answers shaped like the official site's (2026-10-21),
+//! about a made-up character ("Sampleton" on Fregion), with no network.
 
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -41,7 +41,12 @@ impl Transport for Saved {
 fn armory() -> (Armory<Saved>, Saved) {
     let saved = Saved::default();
     *saved.status.lock().unwrap() = 200;
-    let pace = Pace { gap: Duration::ZERO, keep: Duration::from_secs(600), hold: Duration::from_secs(600) };
+    let pace = Pace {
+        gap: Duration::ZERO,
+        keep: Duration::from_secs(600),
+        hold: Duration::from_secs(600),
+        max_hold: Duration::from_secs(600),
+    };
     (Armory::with(saved.clone(), pace), saved)
 }
 
@@ -112,6 +117,37 @@ fn too_many_holds_every_request_for_a_while() {
     // The site is fine again, but the armory waits out its hold.
     assert!(matches!(armory.lookup("Sampleton", 1307), Err(Error::Held { .. })));
     assert_eq!(saved.asked.lock().unwrap().len(), 1);
+}
+
+/// A stop doubles each time the site says "too many" again, up to its
+/// longest, and the first answer brings it back to the shortest.
+#[test]
+fn the_stop_grows_while_the_site_keeps_saying_too_many() {
+    let saved = Saved::default();
+    *saved.status.lock().unwrap() = 429;
+    let ms = Duration::from_millis;
+    let pace = Pace { gap: Duration::ZERO, keep: Duration::from_secs(600), hold: ms(60), max_hold: ms(150) };
+    let armory = Armory::with(saved.clone(), pace);
+    let asked = || saved.asked.lock().unwrap().len();
+    assert!(matches!(armory.lookup("Sampleton", 1307), Err(Error::Held { .. })));
+    std::thread::sleep(ms(80));
+    // Asked again after 60 ms, refused again: now 120 ms.
+    assert!(matches!(armory.lookup("Sampleton", 1307), Err(Error::Held { .. })));
+    assert_eq!(asked(), 2);
+    std::thread::sleep(ms(80));
+    assert!(matches!(armory.lookup("Sampleton", 1307), Err(Error::Held { .. })));
+    assert_eq!(asked(), 2, "still within the second, longer stop");
+    std::thread::sleep(ms(60));
+    *saved.status.lock().unwrap() = 200;
+    assert!(armory.lookup("Sampleton", 1307).is_ok());
+    // An answer: the next stop is the shortest again.
+    *saved.status.lock().unwrap() = 429;
+    assert!(matches!(armory.lookup("Flavbest", 1307), Err(Error::Held { .. })));
+    let before = asked();
+    std::thread::sleep(ms(80));
+    *saved.status.lock().unwrap() = 200;
+    let _ = armory.lookup("Flavbest", 1307);
+    assert!(asked() > before, "60 ms was enough");
 }
 
 #[test]

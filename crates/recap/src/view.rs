@@ -234,6 +234,23 @@ fn share(part: i64, whole: i64) -> u8 {
 }
 
 impl RecapView {
+    /// The attackers in the order they matter most: who killed you, then who
+    /// opened the fight (the earliest to join), then the rest by damage. The
+    /// order the lookups go in and the faces on the bar show.
+    pub fn by_importance(&self) -> Vec<&AttackerView> {
+        let killer = self.attackers.iter().position(|a| a.killer);
+        let opener = self
+            .attackers
+            .iter()
+            .enumerate()
+            .filter(|(i, a)| Some(*i) != killer && a.joined_ms.is_some())
+            .min_by_key(|(i, a)| (a.joined_ms, *i))
+            .map(|(i, _)| i);
+        let first = [killer, opener].into_iter().flatten();
+        let rest = (0..self.attackers.len()).filter(|i| Some(*i) != killer && Some(*i) != opener);
+        first.chain(rest).map(|i| &self.attackers[i]).collect()
+    }
+
     /// The view of a fight. `kills` counts this player's kills on you in the
     /// history kept (`KillLog::count`).
     pub fn build(fight: &Fight, names: &dyn Names, me: Me, kills: &dyn Fn(&str) -> usize) -> RecapView {
