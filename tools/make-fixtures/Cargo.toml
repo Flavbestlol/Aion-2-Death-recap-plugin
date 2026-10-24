@@ -16,5 +16,5 @@ publish = false
 flav-core = { path = "../../../flav-toolkit/crates/flav-core" }
 flav-recap = { path = "../../../flav-toolkit/crates/flav-recap" }
 recap = { path = "../../crates/recap" }
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
 serde_json = "1"

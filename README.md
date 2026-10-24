@@ -7,6 +7,7 @@ When you die in AION 2, Death Recap shows who killed you, with what, and what co
 - **Monsters and bosses** get a drawn mark and a *Monster* or *Boss* tag.
 - **Who hunts you**: a red number on a player who killed you before; hover it for when and with what. Kept for this session, 24 hours or 3 days (your choice).
 - **The skull by the minimap** (shown while the game is in front): a click opens the last recap any time; a right-click opens the settings; drag it where you like.
+- **In the hub and on the dock**: a death raises a note with the killer's class emblem (the dock's skull lights up), taken back when you are up again. The hub's **Open** shows the last recap, **Settings** opens Death Recap's settings.
 - **Online lookups** (off until you turn them on): an attacker's gear score, official portrait and gear, from the official AION 2 site. Hover a portrait for the gear; click a name for their character page.
 
 ## Install

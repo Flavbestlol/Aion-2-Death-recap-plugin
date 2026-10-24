@@ -49,7 +49,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "armory"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -714,7 +714,7 @@ dependencies = [
 
 [[package]]
 name = "death-recap"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "armory",
  "flav-addons",
@@ -1070,7 +1070,7 @@ dependencies = [
 [[package]]
 name = "flav-addons"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "flav-events",
  "semver",
@@ -1081,7 +1081,7 @@ dependencies = [
 [[package]]
 name = "flav-events"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "flav-inventory",
  "schemars 1.2.3",
@@ -1092,7 +1092,7 @@ dependencies = [
 [[package]]
 name = "flav-feed"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "flav-events",
  "futures-util",
@@ -1105,7 +1105,7 @@ dependencies = [
 [[package]]
 name = "flav-inventory"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "serde",
 ]
@@ -1113,7 +1113,7 @@ dependencies = [
 [[package]]
 name = "flav-sdk"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "flav-events",
  "serde_json",
@@ -2852,7 +2852,7 @@ checksum = "20675572f6f24e9e76ef639bc5552774ed45f1c30e2951e1e99c59888861c539"
 
 [[package]]
 name = "recap"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "flav-events",
  "serde",

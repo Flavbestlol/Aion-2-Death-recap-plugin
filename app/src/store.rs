@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::AtomicUsize;
+use std::sync::atomic::{AtomicBool, AtomicUsize};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -49,6 +49,9 @@ pub struct Shared {
     pub status: Mutex<String>,
     /// Fights recorded since Death Recap started (for its line in the hub).
     pub fights: AtomicUsize,
+    /// The recap was closed (or went by itself): the reader takes the death's
+    /// note back.
+    pub closed: AtomicBool,
 }
 
 impl Shared {
@@ -76,6 +79,7 @@ impl Shared {
             armory: Armory::new(),
             status: Mutex::new("Starting".into()),
             fights: AtomicUsize::new(0),
+            closed: AtomicBool::new(false),
         });
         shared.save_history();
         shared

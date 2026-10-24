@@ -212,12 +212,12 @@ fn skill_ref(names: &dyn Names, id: i32) -> SkillRef {
     }
 }
 
-/// The ability that put a debuff on the player. A skill no hit or miss
-/// named (a passive that only marks, a stun that does no damage) is not in
-/// the book: a debuff that is not crowd control is then named after it, as
-/// such marks are (Defense Break from Defense Break), and a crowd control
-/// from an unnamed skill keeps no source rather than a number. Buff events
-/// that carry their skill's name (asked of the core) make this exact.
+/// The ability that put a debuff on the player, as the buff event (or a hit
+/// with it) named it. From a core that does not name a buff's skill (older
+/// than its PR #23), a skill no hit or miss named is not in the book: a
+/// debuff that is not crowd control is then named after it, as such marks
+/// are (Defense Break from Defense Break), and a crowd control from an
+/// unnamed skill keeps no source rather than a number.
 fn source_ref(names: &dyn Names, skill: i32, d: &crate::Debuff) -> Option<SkillRef> {
     if names.skill(skill).is_some() {
         return Some(skill_ref(names, skill));
