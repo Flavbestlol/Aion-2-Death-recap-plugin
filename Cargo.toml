@@ -13,14 +13,14 @@ authors = ["Flavbest"]
 repository = "https://github.com/Flavbestlol/Aion-2-Death-recap-plugin"
 
 [workspace.dependencies]
-# Flav-Toolkit, the core, pinned by commit (02dafa2, after PR #23: events carry
+# Flav-Toolkit, the core, pinned by commit (074800a, after PR #23: events carry
 # names and icons, buffs name the skill that applied them, the hub's `show`).
 # Upgrade the pin on purpose; events only gain types and fields
 # within a version, so an old pin keeps working with a newer core.
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
-flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
-flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
-flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "074800a94a0135f5a1cdff9e0db1be46d693d86d" }
+flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "074800a94a0135f5a1cdff9e0db1be46d693d86d" }
+flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "074800a94a0135f5a1cdff9e0db1be46d693d86d" }
+flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "074800a94a0135f5a1cdff9e0db1be46d693d86d" }
 recap = { path = "crates/recap" }
 armory = { path = "crates/armory" }
 serde = { version = "1", features = ["derive"] }
