@@ -1,7 +1,7 @@
-# A duel lost on 2026-10-21 (Global), from the player's own packet log: the duel ends at 1 HP.
+# A duel lost, from the player's own packet log: the duel ends at 1 HP.
 # The player: entity 4765 (a Ranger). The other: entity 128 (an Assassin). The A2 Tools DPS Meter showed
 # 28,750 damage in 8 s (its fight includes the 3 hits that landed after the duel ended) and no debuffs.
-# Every hit, dodge/resist and buff frame of either entity from 22:56:59 to 22:57:09 (UTC+3), and the player's
+# Every hit, dodge/resist and buff frame of either entity in those 10 seconds, and the player's
 # live HP records (00 8D). Ids only, no names.
 # Format: capture time (Unix ms) <space> the whole frame in hex.
 1792612619343 2504389D2536008001966FC7000103800001AD96E74D02000000C566DB0701620200

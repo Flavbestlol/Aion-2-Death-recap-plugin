@@ -387,7 +387,7 @@ dependencies = [
 
 [[package]]
 name = "recap"
-version = "0.1.0"
+version = "0.3.0"
 dependencies = [
  "flav-events 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0)",
  "serde",

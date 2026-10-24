@@ -103,7 +103,7 @@ impl Screen for Windows {
     }
     fn status(&self, text: &str) {
         // The hub writes what an add-on prints into its log.
-        println!("{text}");
+        reader::say(&mut std::io::stdout(), text);
     }
     fn show(&self, what: Show) {
         // Tauri's windows are handled on its own thread.
@@ -270,8 +270,12 @@ fn settings_set(app: AppHandle, shared: tauri::State<'_, Arc<Shared>>, change: C
     settings_get(shared)
 }
 
+/// `give_back`: the player closed it (× or Esc), so the game gets its focus
+/// back; closed because another window was clicked, that window keeps it.
 #[tauri::command]
-fn settings_close(window: WebviewWindow) {
+fn settings_close(window: WebviewWindow, give_back: bool) {
     let _ = window.hide();
-    alt::focus_game();
+    if give_back {
+        alt::focus_game();
+    }
 }

@@ -66,7 +66,16 @@ impl Settings {
     /// in Flav-Toolkit when Death Recap was built into it (read once, never
     /// written there); the defaults otherwise.
     pub fn load(dir: &Path, core_dir: Option<&Path>) -> Settings {
-        if let Some(s) = read(&Self::path(dir)) {
+        let path = Self::path(dir);
+        if path.exists() {
+            if let Some(s) = read(&path) {
+                return s;
+            }
+            // Damaged: the defaults (lookups off), and the file kept aside
+            // for a look. The core's old choices are for the first start only.
+            let _ = std::fs::rename(&path, dir.join("settings.json.damaged"));
+            let s = Settings::default();
+            s.save(dir);
             return s;
         }
         let from_core = core_dir.and_then(|d| read(&d.join("settings.json")));
@@ -139,6 +148,20 @@ mod tests {
             Settings { online_lookups: true, history: History::ThreeDays, every_fight: true, theme: Theme::Hud }
         );
         let _ = std::fs::remove_dir_all(&ours);
+    }
+
+    /// A damaged file is not a first start: the defaults, never the core's
+    /// old choices.
+    #[test]
+    fn a_damaged_file_gives_the_defaults() {
+        let (ours, core) = (dir("damaged"), dir("damaged-core"));
+        std::fs::write(Settings::path(&ours), r#"{"history":"week"}"#).unwrap();
+        std::fs::write(core.join("settings.json"), r#"{"online_lookups":true}"#).unwrap();
+        let s = Settings::load(&ours, Some(&core));
+        assert!(!s.online_lookups);
+        assert!(ours.join("settings.json.damaged").exists());
+        let _ = std::fs::remove_dir_all(&ours);
+        let _ = std::fs::remove_dir_all(&core);
     }
 
     #[test]

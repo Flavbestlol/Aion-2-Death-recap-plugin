@@ -12,6 +12,6 @@
     "types": ["me", "name", "npc_identified", "player_profile", "player_server", "my_server", "my_combat_power", "my_gear_score", "max_hp", "hp", "died", "hit", "missed", "buff_added", "buff_changed", "buff_removed"]
   },
   "permissions": {
-    "network": ["aion2.plaync.com", "api-search.plaync.com", "assets.playnccdn.com", "profileimg.plaync.com", "fizz-download.playnccdn.com"]
+    "network": ["aion2.plaync.com", "api-search.plaync.com", "assets.playnccdn.com", "profileimg.plaync.com"]
   }
 }

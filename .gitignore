@@ -14,3 +14,15 @@ tls-keys*.log
 # Game art is fetched at build time (tools/class_icons.py), never committed.
 /app/ui/img/class/
 /app/gen/
+# Secrets and local state never belong here: keys, certificates, env files,
+# logs, and Death Recap's own settings and history.
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+*.p12
+*.minisign
+*.log
+settings.json
+history.json

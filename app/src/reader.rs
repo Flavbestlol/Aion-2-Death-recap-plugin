@@ -235,11 +235,24 @@ pub fn note(fights: usize) -> String {
 }
 
 fn set_status(shared: &Shared, screen: &dyn Screen, text: &str) {
-    let mut status = lock(&shared.status);
-    if *status != text {
-        *status = text.to_string();
+    let changed = {
+        let mut status = lock(&shared.status);
+        let changed = *status != text;
+        if changed {
+            *status = text.to_string();
+        }
+        changed
+    };
+    if changed {
         screen.status(text);
     }
+}
+
+/// One line to the hub's log (Death Recap's standard output). When the hub
+/// is gone the pipe is closed and the line is dropped: never a panic, which
+/// would end the reader for good.
+pub fn say(out: &mut dyn std::io::Write, text: &str) {
+    let _ = writeln!(out, "{text}");
 }
 
 /// One event: the player's own numbers, back on their feet, then the recorder.
@@ -249,6 +262,10 @@ fn step(recorder: &mut Recorder, reading: &mut Reading, screen: &dyn Screen, e: 
         EventKind::MyGearScore { gear_score, .. } => reading.me.gear_score = Some(*gear_score),
         EventKind::MyServer { server } => reading.my_server = Some(*server),
         EventKind::PlayerServer { name, server } => {
+            // Bounded: the game says it again when they come into view.
+            if reading.server_of.len() >= 20_000 && !reading.server_of.contains_key(name) {
+                reading.server_of.clear();
+            }
             reading.server_of.insert(name.clone(), *server);
         }
         EventKind::Hp { id, hp, .. } if reading.dead && Some(*id) == recorder.me() && *hp > 0 => {
@@ -361,9 +378,13 @@ fn start_lookups(shared: &Arc<Shared>, screen: &Arc<dyn Screen>) -> Sender<Reque
     let (tx, rx) = channel();
     let (shared, screen) = (shared.clone(), screen.clone());
     let _ = std::thread::Builder::new().name("recap-lookups".into()).spawn(move || {
-        lookups::run(&shared.armory, rx, Patience::default(), &|f: Found| {
+        let allowed = || lock(&shared.settings).online_lookups;
+        lookups::run(&shared.armory, rx, Patience::default(), &allowed, &|f: Found| {
             if let Some(page) = f.page {
-                lock(&shared.pages).insert((f.fight_id, f.id), page);
+                // Only the fight being looked up keeps its pages.
+                let mut pages = lock(&shared.pages);
+                pages.retain(|(fight, _), _| *fight == f.fight_id);
+                pages.insert((f.fight_id, f.id), page);
             }
             if let Some(last) = lock(&shared.last).as_mut()
                 && last.fight_id == f.fight_id
@@ -374,4 +395,27 @@ fn start_lookups(shared: &Arc<Shared>, screen: &Arc<dyn Screen>) -> Sender<Reque
         });
     });
     tx
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// A closed pipe (the hub gone) is not a panic.
+    #[test]
+    fn a_line_to_a_closed_pipe_is_dropped() {
+        struct Closed;
+        impl std::io::Write for Closed {
+            fn write(&mut self, _: &[u8]) -> std::io::Result<usize> {
+                Err(std::io::ErrorKind::BrokenPipe.into())
+            }
+            fn flush(&mut self) -> std::io::Result<()> {
+                Err(std::io::ErrorKind::BrokenPipe.into())
+            }
+        }
+        say(&mut Closed, "Flav-Toolkit went away");
+        let mut ok = Vec::new();
+        say(&mut ok, "Connected");
+        assert_eq!(ok, b"Connected\n");
+    }
 }

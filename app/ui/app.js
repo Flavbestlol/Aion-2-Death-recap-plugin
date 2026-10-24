@@ -20,6 +20,8 @@
   const $ = (sel, el = root) => el.querySelector(sel);
   let recap = null;
   let hideTimer = null;
+  // The end of the fade-out; a recap shown meanwhile cancels it.
+  let leaveTimer = null;
   // The details are open while Alt is held, or after a click (until the next).
   let altHeld = false;
   let pinned = false;
@@ -162,7 +164,8 @@
     if (k) oldFace.replaceWith(face(k));
     $(".killer-portrait .pvp").style.display = v.final_blow && k?.player ? "" : "none";
     const kills = $(".kills");
-    kills.hidden = !(k && k.kills_on_you > 0);
+    // Shown from the second time: this death is counted in it.
+    kills.hidden = !(k && k.kills_on_you > 1);
     kills.textContent = k ? String(k.kills_on_you) : "";
     kills.dataset.name = k ? k.name : "";
     const classImg = $(".name-line .class");
@@ -413,6 +416,7 @@
   function show(r) {
     recap = r;
     clearTimeout(hideTimer);
+    clearTimeout(leaveTimer);
     pinned = false;
     root.classList.remove("leaving", "open");
     $(".key").classList.remove("on");
@@ -426,7 +430,7 @@
   function hide() {
     pinned = false;
     root.classList.add("leaving");
-    setTimeout(() => { root.hidden = true; root.classList.remove("open"); invoke("hide_overlay"); }, 260);
+    leaveTimer = setTimeout(() => { root.hidden = true; root.classList.remove("open"); invoke("hide_overlay"); }, 260);
   }
 
   listen("recap", (e) => show(e.payload));
@@ -450,7 +454,6 @@
       ? "Alt can't be read while the game runs as administrator: click here for the details, or run Flav-Toolkit as administrator (it starts Death Recap)"
       : "Hold Alt, or click, for the details";
   });
-  listen("close", () => { if (!root.hidden) hide(); });
   listen("revived", () => { if (recap && !root.hidden && recap.view.outcome === "died") hide(); });
 
   // The look: the HUD (every add-on's) or the game's own; the settings say.

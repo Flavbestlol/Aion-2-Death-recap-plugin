@@ -1,8 +1,8 @@
-# Two duels on 2026-10-21 (Global), from the defending player's own packet log, to check what a fight
+# Two duels, from the defending player's own packet log, to check what a fight
 # recap reads against what the players did and the A2 Tools DPS Meter showed.
-# The player: entity 4765 (a Ranger, 19,173 HP). The other: entity 16072 (an Assassin, combat power 134,880).
-# Duel 1 (22:35:38 UTC+3): one Quick Slice: 4 hits, 672 damage, two Insignia debuffs.
-# Duel 2 (22:38:50 UTC+3): Shadowstrike (a 3-second stun on the player) then Ambush Stance: 1,136 damage.
+# The player: entity 4765 (a Ranger). The other: entity 16072 (an Assassin).
+# Duel 1: one Quick Slice: 4 hits, 672 damage, two Insignia debuffs.
+# Duel 2: Shadowstrike (a 3-second stun on the player) then Ambush Stance: 1,136 damage.
 # Every hit, dodge/resist and buff frame of either entity in those two stretches, and the player's live HP
 # records (00 8D). Ids only, no names.
 # Format: capture time (Unix ms) <space> the whole frame in hex.

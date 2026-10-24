@@ -29,11 +29,12 @@
       b.addEventListener("click", () => invoke("settings_set", { change: { key, value: b.dataset.value } }).then(show).catch(() => {}));
     }
   }
-  const close = () => invoke("settings_close").catch(() => {});
-  document.getElementById("close").addEventListener("click", close);
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
-  // Clicking elsewhere closes it.
-  win.onFocusChanged(({ payload: focused }) => { if (!focused) close(); else refresh(); }).catch(() => {});
+  // × and Esc give the game its focus back; clicking another window only
+  // closes the panel (the window clicked keeps the focus).
+  const close = (giveBack) => invoke("settings_close", { giveBack }).catch(() => {});
+  document.getElementById("close").addEventListener("click", () => close(true));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(true); });
+  win.onFocusChanged(({ payload: focused }) => { if (!focused) close(false); else refresh(); }).catch(() => {});
   document.addEventListener("contextmenu", (e) => e.preventDefault());
   refresh();
 })();

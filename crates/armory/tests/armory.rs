@@ -63,7 +63,7 @@ fn a_lookup_gives_combat_power_and_gear_score() {
             class: "Ranger".into(),
             level: 40,
             combat_power: 123_456,
-            gear_score: Some(2_715),
+            gear_score: Some(2_600),
             faction: "Elyos".into(),
             portrait: Some(
                 "https://profileimg.plaync.com/game_profile_images/aion2global/images?gameServerKey=1307&charKey=100000000000000001"
@@ -187,7 +187,7 @@ fn the_real_site() {
 fn a_name_found_once_in_the_region_needs_no_server() {
     let (armory, saved) = armory();
     let me = armory.lookup_in_region("Sampleton", "eu").unwrap();
-    assert_eq!((me.server_id, me.combat_power, me.gear_score), (1307, 123_456, Some(2_715)));
+    assert_eq!((me.server_id, me.combat_power, me.gear_score), (1307, 123_456, Some(2_600)));
     let asked = saved.asked.lock().unwrap();
     assert!(asked[0].contains("region=eu") && !asked[0].contains("serverId"), "{}", asked[0]);
 }
