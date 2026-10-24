@@ -1,0 +1,16 @@
+/target
+/tools/make-fixtures/target
+*.pdb
+# Captures hold chat and other players' names: never commit a real one.
+# The fixtures here are events with ids only (crates/recap/tests/fixtures),
+# made by tools/make-fixtures from frames with ids only.
+/captures
+packets_*.txt
+live-session*.txt
+*.pcap
+*.pcapng
+*.keys
+tls-keys*.log
+# Game art is fetched at build time (tools/class_icons.py), never committed.
+/app/ui/img/class/
+/app/gen/
