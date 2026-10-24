@@ -1,6 +1,6 @@
 # Death Recap: design
 
-Status: 2026-10-24, v0.1.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed.
+Status: 2026-10-24, v0.2.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `02dafa2`.
 
 ```text
 AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)
@@ -29,14 +29,17 @@ The core is pinned by commit (`Cargo.toml`, `[workspace.dependencies]`): `flav-e
 - **Time**: fights also end by time (15 s of nothing, or 3 s after a death for the hits on their way). "Now" is the last event's time plus what has passed since it came, never the wall clock, so a replay (`flav feed`) of an old session ends its fights as the live game would.
 - **A fight that ended** in a death or a lost duel (or any, with *every fight* on): who killed you goes into the history, `RecapView::build` makes the view, the screen shows it, and the hub gets a note (*Last death* or *Duel lost*: the killer and the final blow, with the killer's class emblem). With online lookups on, a thread asks the official site about each player attacker, one at a time, and the overlay fills in as answers come.
 - **The hub** sees Death Recap working while it calls `next` (a beat every 2 s), and its line says *N fights recorded*.
+- **Notes**: a death raises an `alert` note, *You died* (*Duel lost* for a duel), the killer and the final blow as its line, the killer's class emblem as its picture (a monster: the final blow's icon from the game's data server). The hub's Notes panel shows it and the dock's skull lights up with it. It is taken back when the player is up again (their HP above 0) or the recap is closed; a new death replaces it. One note per fight.
+- **The hub's buttons**: the core's `show` message reaches the reader as `Message::Show`: *Open* shows the last recap (left up if it is), *Settings* opens Death Recap's settings panel.
 
 ## Names and icons come on the events (`crates/recap/src/book.rs`)
 
 Flav-Toolkit puts the game data's names and icons on its events (PR #22 of the core): a hit or a miss carries its skill's name and icon, `npc_identified` the monster's name and whether it is a boss, a buff its name, icon and control. `name` events name entities. `Book` writes these down, bounded, and answers the view's questions; Death Recap keeps no tables of the game data.
 
 - A specialised skill's id (`14110230`, on a buff) falls back to its base skill (`14110000`, the id hits carry), as the core's own lookup does.
-- **Checked**: over a 4-hour recorded session (63 fights, 13 deaths), the view built from the events alone equals the built-in recap's (which asked the core's engine directly) except three icons: a buff's source skill that only ever appeared as a buff, specialised, got its base skill's icon. Every attacker was named from `name` and `npc_identified` events alone.
-- **Not yet exact**: a debuff from a skill no hit or miss named (a passive that only marks, a stun that does no damage). Such a debuff that is not crowd control is named after itself (Defense Break from Defense Break, as such marks are); a crowd control from such a skill keeps no source rather than a number. Asked of the core: buff events carrying their skill's name and icon (`ADDONS.md` section 10).
+- **Buffs name the skill that applied them** (`skill_name`, `skill_icon`, core PR #23): a passive that only marks, a stun that does no damage, a Theostone, each with its own name and icon, specialised ids included.
+- **Checked**: over a 4-hour recorded session (63 fights, 13 deaths), the view built from the events alone equals the built-in recap's (which asked the core's engine directly) with no difference at all. Every attacker was named from `name` and `npc_identified` events alone.
+- With a core older than PR #23 (no skill on buffs), a debuff from a skill no hit or miss named falls back: not crowd control, it is named after itself (Defense Break from Defense Break, as such marks are); crowd control keeps no source rather than a number.
 
 ## Heals that look like hits
 

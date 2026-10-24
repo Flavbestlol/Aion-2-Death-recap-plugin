@@ -170,9 +170,9 @@ dependencies = [
 [[package]]
 name = "flav-events"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
- "flav-inventory 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16)",
+ "flav-inventory 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0)",
  "schemars",
  "serde",
  "serde_json",
@@ -188,7 +188,7 @@ dependencies = [
 [[package]]
 name = "flav-inventory"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16#7da01de48bb1ef8c341e424d582def2a2780ba16"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
 dependencies = [
  "serde",
 ]
@@ -311,7 +311,7 @@ name = "make-fixtures"
 version = "0.1.0"
 dependencies = [
  "flav-core",
- "flav-events 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16)",
+ "flav-events 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0)",
  "flav-recap",
  "recap",
  "serde_json",
@@ -389,7 +389,7 @@ dependencies = [
 name = "recap"
 version = "0.1.0"
 dependencies = [
- "flav-events 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=7da01de48bb1ef8c341e424d582def2a2780ba16)",
+ "flav-events 0.1.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0)",
  "serde",
  "serde_json",
 ]

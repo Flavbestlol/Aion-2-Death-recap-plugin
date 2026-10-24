@@ -2,8 +2,9 @@
 //! monster an NPC is, what a skill is called and its icon.
 //!
 //! Flav-Toolkit puts the game data's names and icons on its events (a hit
-//! carries its skill's name and icon, `npc_identified` the monster's name and
-//! whether it is a boss) and sends names as `name` events, so Death Recap
+//! carries its skill's name and icon, a buff the skill that applied it,
+//! `npc_identified` the monster's name and whether it is a boss) and sends
+//! names as `name` events, so Death Recap
 //! keeps no tables of the game data: it writes down what the events say.
 
 use std::collections::HashMap;
@@ -58,18 +59,34 @@ impl Book {
                     self.npc_codes.insert(*npc, (name.clone(), *boss));
                 }
             }
+            // A buff names the skill that applied it (a passive that only
+            // marks, a stun that does no damage: skills no hit names).
+            EventKind::BuffAdded(b) | EventKind::BuffChanged(b) => self.learn_buff(b),
+            EventKind::BuffsListed { buffs, .. } => buffs.iter().for_each(|b| self.learn_buff(b)),
             EventKind::Hit { skill, skill_name, skill_icon, .. }
             | EventKind::Missed { skill, skill_name, skill_icon, .. }
             | EventKind::Heal { skill, skill_name, skill_icon, .. }
                 if skill_name.is_some() || skill_icon.is_some() =>
             {
-                bound(&mut self.skills, MAX_SKILLS);
-                let s = self.skills.entry(*skill).or_default();
-                s.name = skill_name.clone().or(s.name.take());
-                s.icon = skill_icon.clone().or(s.icon.take());
+                self.learn_skill(*skill, skill_name, skill_icon);
             }
             _ => {}
         }
+    }
+
+    fn learn_buff(&mut self, b: &flav_events::event::Buff) {
+        if let Some(skill) = b.skill
+            && (b.skill_name.is_some() || b.skill_icon.is_some())
+        {
+            self.learn_skill(skill as i32, &b.skill_name, &b.skill_icon);
+        }
+    }
+
+    fn learn_skill(&mut self, skill: i32, name: &Option<String>, icon: &Option<String>) {
+        bound(&mut self.skills, MAX_SKILLS);
+        let s = self.skills.entry(skill).or_default();
+        s.name = name.clone().or(s.name.take());
+        s.icon = icon.clone().or(s.icon.take());
     }
 
     /// An entity's name.

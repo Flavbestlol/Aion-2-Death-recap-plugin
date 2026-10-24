@@ -283,6 +283,8 @@ fn control_time_counts_overlaps_once() {
                 name: Some("Stun".into()),
                 icon: None,
                 control: Some(Control::Stun),
+                skill_name: None,
+                skill_icon: None,
             }),
         )
     };
@@ -420,6 +422,8 @@ fn a_hostile_healer_hits() {
             name: Some("Stun".into()),
             icon: None,
             control: Some(Control::Stun),
+            skill_name: None,
+            skill_icon: None,
         }),
     );
     let f = run(&[me(), hp(1, 20_000), stun, heal_hit(100, 8, 1_500)]);
@@ -514,6 +518,8 @@ fn a_debuff_from_an_unnamed_skill() {
                 name: Some(name.into()),
                 icon: Some("mark.png".into()),
                 control,
+                skill_name: None,
+                skill_icon: None,
             }),
         )
     };
@@ -530,4 +536,35 @@ fn a_debuff_from_an_unnamed_skill() {
     assert_eq!(a.debuffs[0].sources[0].name, "Defense Break");
     assert_eq!(a.debuffs[0].sources[0].icon.as_deref(), Some("mark.png"));
     assert!(a.cc[0].sources.is_empty());
+}
+
+/// A buff that names the skill that applied it (core PR #23) gives the crowd
+/// control its ability, though no hit of that skill was seen.
+#[test]
+fn a_buff_names_its_skill() {
+    use recap::view::{Me, RecapView};
+    let stun = ev(
+        20,
+        EventKind::BuffAdded(Buff {
+            entity: 1,
+            instance: 1,
+            abnormal: 100_000_301,
+            caster: 7,
+            skill: Some(13_070_230),
+            level: 1,
+            length_ms: Some(3_000),
+            end_ms: None,
+            restarted: false,
+            name: Some("Stun".into()),
+            icon: Some("stun.png".into()),
+            control: Some(Control::Stun),
+            skill_name: Some("Shadowstrike".into()),
+            skill_icon: Some("shadowstrike.png".into()),
+        }),
+    );
+    let (f, r) = replay(&[me(), hp(1, 1000), hit(10, 7, 100), stun, hp(30, 0)]);
+    let v = RecapView::build(&f[0], r.book(), Me::default(), &|_| 0);
+    let cc = &v.attackers[0].cc[0];
+    assert_eq!((cc.name.as_str(), cc.sources[0].name.as_str()), ("Stun", "Shadowstrike"));
+    assert_eq!(cc.sources[0].icon.as_deref(), Some("shadowstrike.png"));
 }

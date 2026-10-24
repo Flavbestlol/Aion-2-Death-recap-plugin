@@ -12,7 +12,7 @@ use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use std::time::{Duration, Instant};
 
-use flav_sdk::{Client, Config, Error, Event, EventKind, LogLevel, Message, NoteIcon, NoteLevel};
+use flav_sdk::{Client, Config, Error, Event, EventKind, LogLevel, Message, NoteIcon, NoteLevel, Show};
 use recap::view::{Kill, Me, RecapView};
 use recap::{Fight, Outcome, Recorder};
 
@@ -50,6 +50,8 @@ pub trait Screen: Send + Sync {
     fn revived(&self);
     /// Where the connection is, in words.
     fn status(&self, _text: &str) {}
+    /// The player pressed the hub's Open (the last recap) or Settings.
+    fn show(&self, _what: Show) {}
 }
 
 /// The game's time as the events tell it. A replay (`flav feed`) plays an
@@ -77,6 +79,11 @@ struct Reading {
     server_of: HashMap<String, u16>,
     /// The player is dead (the recap stays until they are back).
     dead: bool,
+    /// The title of Death Recap's note in the hub and on the dock, while one
+    /// is up (one per fight: the last death or lost duel).
+    note: Option<String>,
+    /// The player is back on their feet: the note comes down.
+    back_up: bool,
 }
 
 /// Runs until `stop` says so (never, in the app), connecting again whenever
@@ -114,6 +121,7 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                     }
                 }
                 Ok(Some(Message::Status(s))) => set_status(&shared, &*screen, &format!("Connected: {}", s.text)),
+                Ok(Some(Message::Show(what))) => screen.show(what),
                 // A type newer than this build: skipped.
                 Ok(Some(Message::Unknown(_))) => {}
                 Ok(None) => {
@@ -127,6 +135,13 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                     set_status(&shared, &*screen, &format!("Flav-Toolkit went away ({e}); waiting for it"));
                     break;
                 }
+            }
+            // Back on their feet, or the recap closed: the death's note comes down.
+            let closed = shared.closed.swap(false, Ordering::Relaxed);
+            if (std::mem::take(&mut reading.back_up) || closed)
+                && let Some(title) = reading.note.take()
+            {
+                let _ = client.unnotify(Some(&title));
             }
             if last_note.elapsed() >= Duration::from_secs(2) {
                 last_note = Instant::now();
@@ -166,6 +181,7 @@ fn step(recorder: &mut Recorder, reading: &mut Reading, screen: &dyn Screen, e: 
         }
         EventKind::Hp { id, hp, .. } if reading.dead && Some(*id) == recorder.me() && *hp > 0 => {
             reading.dead = false;
+            reading.back_up = true;
             screen.revived();
         }
         _ => {}
@@ -233,17 +249,30 @@ fn ended(
     }
     screen.recap(&recap);
 
-    // A note in the hub (and on the dock's icon): who it was.
+    // A note in the hub and on the dock's skull: an alert with the killer's
+    // class emblem (a monster: the final blow's icon), taken back when the
+    // player is up again or the recap is closed. One per fight: a new death
+    // replaces the last one's.
     if fight.outcome != Outcome::Survived
         && let Some(k) = recap.view.attackers.iter().find(|a| a.killer).or(recap.view.attackers.first())
     {
-        let how = recap.view.final_blow.as_ref().map(|b| format!(" · {}", b.skill.name)).unwrap_or_default();
-        let icon = match &k.class {
-            Some(class) if k.player => NoteIcon::Class(class.clone()),
+        let blow = recap.view.final_blow.as_ref();
+        let how = blow.map(|b| format!(" · {}", b.skill.name)).unwrap_or_default();
+        let icon = match (&k.class, blow.and_then(|b| b.skill.icon.clone())) {
+            (Some(class), _) if k.player => NoteIcon::Class(class.clone()),
+            (_, Some(url)) => NoteIcon::Url(url),
             _ => NoteIcon::Addon,
         };
-        let title = if fight.outcome == Outcome::DuelLost { "Duel lost" } else { "Last death" };
-        let _ = client.notify(NoteLevel::News, title, Some(&format!("{}{how}", k.name)), Some(icon));
+        let title = if fight.outcome == Outcome::DuelLost { "Duel lost" } else { "You died" };
+        if let Some(old) = reading.note.take()
+            && old != title
+        {
+            let _ = client.unnotify(Some(&old));
+        }
+        let _ = client.notify(NoteLevel::Alert, title, Some(&format!("{}{how}", k.name)), Some(icon));
+        reading.note = Some(title.to_string());
+        // A lost duel's recap goes by itself and the player never died: its
+        // note comes down with the recap (`closed`).
     }
 
     if lock(&shared.settings).online_lookups {

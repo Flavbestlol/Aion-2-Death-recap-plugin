@@ -18,6 +18,7 @@ use std::time::Duration;
 use death_recap::reader::{self, Screen};
 use death_recap::settings::{History, Settings};
 use death_recap::store::{Extra, Recap, Shared, lock};
+use flav_sdk::Show;
 use serde::{Deserialize, Serialize};
 use tauri::{
     AppHandle, Emitter, LogicalSize, Manager, PhysicalPosition, WebviewUrl, WebviewWindow, WebviewWindowBuilder,
@@ -137,6 +138,22 @@ impl Screen for Windows {
         // The hub writes what an add-on prints into its log.
         println!("{text}");
     }
+    fn show(&self, what: Show) {
+        // Tauri's windows are handled on its own thread.
+        let app = self.0.clone();
+        let _ = self.0.run_on_main_thread(move || match what {
+            // The hub's Open: the last recap (left up if it already is).
+            Show::Open => {
+                let visible = app.get_webview_window("overlay").and_then(|w| w.is_visible().ok()).unwrap_or(false);
+                if !visible {
+                    toggle(&app);
+                }
+            }
+            Show::Settings => {
+                let _ = open_settings(app);
+            }
+        });
+    }
 }
 
 /// Every 50 ms: Alt (while a recap is shown); every 250 ms: whether Alt can
@@ -246,6 +263,8 @@ fn fit(window: WebviewWindow, height: f64) {
 fn hide_overlay(app: AppHandle, window: WebviewWindow) {
     let _ = window.hide();
     let _ = app.emit_to("icon", "overlay-open", false);
+    // The death's note in the hub and on the dock comes down with it.
+    app.state::<Arc<Shared>>().closed.store(true, Ordering::Relaxed);
 }
 
 /// Open an attacker's official character page (only pages the lookups

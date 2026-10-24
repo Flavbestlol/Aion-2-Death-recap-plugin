@@ -6,20 +6,21 @@ members = ["crates/recap", "crates/armory", "app"]
 exclude = ["tools"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 license = "GPL-3.0-only"
 authors = ["Flavbest"]
 repository = "https://github.com/Flavbestlol/Aion-2-Death-recap-plugin"
 
 [workspace.dependencies]
-# Flav-Toolkit, the core, pinned by commit (PR #22's merge: events carry names
-# and icons). Upgrade the pin on purpose; events only gain types and fields
+# Flav-Toolkit, the core, pinned by commit (02dafa2, after PR #23: events carry
+# names and icons, buffs name the skill that applied them, the hub's `show`).
+# Upgrade the pin on purpose; events only gain types and fields
 # within a version, so an old pin keeps working with a newer core.
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
-flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
-flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
-flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
+flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
+flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
+flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "02dafa2803d7f8aafd227e34ee014937b36944d0" }
 recap = { path = "crates/recap" }
 armory = { path = "crates/armory" }
 serde = { version = "1", features = ["derive"] }
