@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "death-recap",
+  "name": "Death Recap",
+  "version": "0.1.0",
+  "author": "Flavbest",
+  "description": "When you die: who killed you, with what, and what controlled you. Hold Alt (or click the bar) for each attacker.",
+  "kind": "external",
+  "run": { "exe": "death-recap.exe", "hidden": true },
+  "events": {
+    "version": 1,
+    "types": ["me", "name", "npc_identified", "player_profile", "player_server", "my_server", "my_combat_power", "my_gear_score", "max_hp", "hp", "died", "hit", "missed", "buff_added", "buff_changed", "buff_removed"]
+  },
+  "permissions": {
+    "network": ["aion2.plaync.com", "api-search.plaync.com", "assets.playnccdn.com", "profileimg.plaync.com", "fizz-download.playnccdn.com"]
+  }
+}

@@ -1,0 +1,76 @@
+# Death Recap: design
+
+Status: 2026-10-24, v0.1.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed.
+
+```text
+AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)
+                                                │  events with names and icons on them
+                                                ▼
+             death-recap.exe:  reader ──▶ recap::Recorder ──▶ RecapView ──▶ the overlay, the icon
+                                  │                                            ▲
+                                  └── (online lookups on) armory ── official site ┘
+```
+
+## Crates
+
+| Crate | What it is |
+|---|---|
+| `crates/recap` | The recap's logic: `Recorder` cuts events into fights on the player; `view` turns a fight into what the overlay shows; `Book` keeps what the events said about names and icons. Depends on `flav-events` only (the core's event shapes) |
+| `crates/armory` | The opt-in lookups on the official AION 2 site: gear score, portrait, worn items, the character page |
+| `app` | `death-recap.exe` (Tauri): the reader (`reader.rs`, testable without windows), settings and shared state (`settings.rs`, `store.rs`), the windows (`main.rs`), Alt (`alt.rs`), the pages (`ui/`) |
+| `tools/make-fixtures` | Not in the workspace: builds the test fixtures from the core (needs a Flav-Toolkit checkout beside this one) |
+
+The core is pinned by commit (`Cargo.toml`, `[workspace.dependencies]`): `flav-events` (the events), `flav-sdk` (the feed's client); `flav-feed` and `flav-addons` for tests.
+
+## The reader (`app/src/reader.rs`)
+
+- **Connects** with `flav-sdk` as `death-recap`, asking for the types in `reader::TYPES` (the same list as `addon.json`, held together by a test). Flav-Toolkit not running: it waits and tries every half second; refused (an events version the core does not serve): it says so and tries every 5 s; the core restarted: it connects again, and the core re-sends who the player is at hello.
+- **Every event** goes to `Recorder::push`; the player's own combat power, gear score and server are kept beside it, and the player's HP back above 0 after a death sends *revived* (the death's recap goes away).
+- **Time**: fights also end by time (15 s of nothing, or 3 s after a death for the hits on their way). "Now" is the last event's time plus what has passed since it came, never the wall clock, so a replay (`flav feed`) of an old session ends its fights as the live game would.
+- **A fight that ended** in a death or a lost duel (or any, with *every fight* on): who killed you goes into the history, `RecapView::build` makes the view, the screen shows it, and the hub gets a note (*Last death* or *Duel lost*: the killer and the final blow, with the killer's class emblem). With online lookups on, a thread asks the official site about each player attacker, one at a time, and the overlay fills in as answers come.
+- **The hub** sees Death Recap working while it calls `next` (a beat every 2 s), and its line says *N fights recorded*.
+
+## Names and icons come on the events (`crates/recap/src/book.rs`)
+
+Flav-Toolkit puts the game data's names and icons on its events (PR #22 of the core): a hit or a miss carries its skill's name and icon, `npc_identified` the monster's name and whether it is a boss, a buff its name, icon and control. `name` events name entities. `Book` writes these down, bounded, and answers the view's questions; Death Recap keeps no tables of the game data.
+
+- A specialised skill's id (`14110230`, on a buff) falls back to its base skill (`14110000`, the id hits carry), as the core's own lookup does.
+- **Checked**: over a 4-hour recorded session (63 fights, 13 deaths), the view built from the events alone equals the built-in recap's (which asked the core's engine directly) except three icons: a buff's source skill that only ever appeared as a buff, specialised, got its base skill's icon. Every attacker was named from `name` and `npc_identified` events alone.
+- **Not yet exact**: a debuff from a skill no hit or miss named (a passive that only marks, a stun that does no damage). Such a debuff that is not crowd control is named after itself (Defense Break from Defense Break, as such marks are); a crowd control from such a skill keeps no source rather than a number. Asked of the core: buff events carrying their skill's name and icon (`ADDONS.md` section 10).
+
+## Heals that look like hits
+
+The game sends an ally's heal on the player the way it sends a hit (a party Cleric's Radiant Benediction, 2026-10-21: 12 "hits" for 23,603 while the player stood at full HP). A Cleric's or Chanter's skill on the player (`17…`/`18…`, not the basic attack) waits up to 3 s for the next HP record of the player, and the HP decides:
+
+- HP went up, or no record came (HP did not move: a heal at full HP): a heal, left out.
+- HP went down: whichever reading is closer, all of them hits (down by them and the other hits since the last record) or all of them heals (down by the other hits, less up to them, as full HP can cut a heal short).
+- A skill told apart twice the same way is known from then on; an entity that was hostile in the fight (a hit with a skill that cannot heal, a miss, crowd control) never heals.
+- Every other hit counts at once. Hits decided late go into the fight at their own time.
+
+An ally's buff renewed every few seconds kept fights open for minutes (one "fight" ran 316 s): only crowd control applied again keeps a fight going.
+
+## Fights (`crates/recap/src/lib.rs`)
+
+A fight starts with the first hit, dodge, resist or debuff another entity lands on the player, and ends at a death (HP 0), a lost duel (HP stops at 1 right after a hit: AION 2 duels end at 1 HP), or after 15 s with nothing. Hits within 3 s after a death or a duel's end stay with it as `after_end`. Each fight lists every attacker (damage per skill, crits, debuffs, how long their crowd control held the player, overlaps counted once, cut at the death), dodges and resists, the lowest HP, the final blow, and what the player dealt (from 10 s before the first hit). Events from before the game says who the player is are kept (5 minutes) and replayed once it does.
+
+- **Crowd control** is the buff's `control` (the core reads it from the game data's name: stun, knock, fear, sleep, petrify, stagger, confusion are *hard*; root, slow, silence, blind, taunt are *soft*).
+- A buff instance can move on to another effect (`buff_changed` with a new id): Shadow Fall turns a stun into its next step, then knocks down. The first effect ends there and the next starts.
+- **Crowd control, by ability**: one entry per effect and the ability that put it (a skill, a passive that triggered, a Theostone), so two knockbacks from two skills are two.
+
+## The windows (`app/src/main.rs`, `app/ui/`)
+
+Same look and behaviour as when built in.
+
+- **The overlay** (`index.html`, `app.js`, `style.css`): top centre of the main screen, no decorations, transparent, no shadow, never takes the focus (`focusable(false)`, `WS_EX_NOACTIVATE`), sized to its content (a transparent window still catches clicks, so it is never bigger than what it shows; the height is worked out from what is shown, never measured while the details slide). It shows on a death or a lost duel and leaves when the player is back on their feet (a lost duel or a survived fight leaves by itself).
+- **Details**: hold **Alt**, or click the bar (or its Alt key) to keep them open. Alt is read with `GetAsyncKeyState`, only while a recap shows; the game still gets the key. Windows hides the keyboard from a program while one running as administrator has the focus: when the game runs as administrator and Death Recap does not, the key on the bar says **Click**. Started by an elevated Flav-Toolkit, Death Recap is elevated too and reads Alt.
+- **The skull icon by the minimap** (`icon.*`): 40 px, shown only while the game (or Death Recap) is in front. A click opens or closes the last recap and gives the game its focus back; a drag moves it (the place is kept); a right-click opens the settings. It moves to the core's dock when the dock exists.
+- **Settings** (`settings.*`, a small panel by the icon; starting Death Recap again also opens it, the way back when the icon is off): online lookups (off by default), every fight, how long to remember who killed you (this session, a day, 3 days), the icon. Kept in `%APPDATA%\com.flavbest.death-recap\settings.json`; on the first start, the choices made in Flav-Toolkit when Death Recap was built in are read once from its folder (and its kill history, when kept longer than a session).
+- **Character pages**: `https://aion2.plaync.com/en-us/characters/<server>/<id>?region=<region>` (`armory::page_url`); the page can open only pages the lookups found.
+- **Icons**: the game's own, from its data server, as the events name them; class emblems from the meter's repository, fetched before a build (`tools/class_icons.py`) and compiled in; combat power and gear score marks and the font from the official site. Monsters get a drawn mark.
+- **One instance** (`tauri-plugin-single-instance`).
+
+## Tests and fixtures
+
+- `crates/recap/tests/fights.rs`: three real sessions (two duels, a lost duel, a live Abyss death) as the events the core's engine read from the core's frame fixtures (ids only), one JSON line each as the feed sends them; their views must equal the built-in recap's (`*.views.json`) field for field. Plus the fight rules on made-up events.
+- `app/tests/against_the_feed.rs`: a real feed in the test process serves the Abyss death; the reader shows the recap, writes *1 fight recorded* in the hub and raises its note. The manifest is checked as the hub reads it.
+- `tools/make-fixtures` (needs the core checked out beside this repository at the pinned commit): `fixtures` rebuilds both kinds of fixture from the frames in `tools/make-fixtures/frames/`; `compare <capture.txt>` checks a whole recorded session, fight by fight, against the built-in recap, and writes nothing (a session holds other players' names).

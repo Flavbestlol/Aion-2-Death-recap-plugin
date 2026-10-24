@@ -1,0 +1,638 @@
+{
+"1101": {
+"region": "nae",
+"name": "Siel",
+"short": "SIE",
+"faction": "Elyos"
+},
+"1102": {
+"region": "nae",
+"name": "Nezekan",
+"short": "NEZ",
+"faction": "Elyos"
+},
+"1103": {
+"region": "nae",
+"name": "Vaizel",
+"short": "VAI",
+"faction": "Elyos"
+},
+"1104": {
+"region": "nae",
+"name": "Kaisinel",
+"short": "KAI",
+"faction": "Elyos"
+},
+"1105": {
+"region": "nae",
+"name": "Yustiel",
+"short": "YUS",
+"faction": "Elyos"
+},
+"1106": {
+"region": "nae",
+"name": "Ariel",
+"short": "ARI",
+"faction": "Elyos"
+},
+"1107": {
+"region": "nae",
+"name": "Fregion",
+"short": "FRE",
+"faction": "Elyos"
+},
+"1108": {
+"region": "nae",
+"name": "Meslamtaeda",
+"short": "MES",
+"faction": "Elyos"
+},
+"1109": {
+"region": "nae",
+"name": "Hithanya",
+"short": "HIT",
+"faction": "Elyos"
+},
+"1201": {
+"region": "naw",
+"name": "Siel",
+"short": "SIE",
+"faction": "Elyos"
+},
+"1202": {
+"region": "naw",
+"name": "Nezekan",
+"short": "NEZ",
+"faction": "Elyos"
+},
+"1203": {
+"region": "naw",
+"name": "Vaizel",
+"short": "VAI",
+"faction": "Elyos"
+},
+"1204": {
+"region": "naw",
+"name": "Kaisinel",
+"short": "KAI",
+"faction": "Elyos"
+},
+"1205": {
+"region": "naw",
+"name": "Yustiel",
+"short": "YUS",
+"faction": "Elyos"
+},
+"1301": {
+"region": "eu",
+"name": "Siel",
+"short": "SIE",
+"faction": "Elyos"
+},
+"1302": {
+"region": "eu",
+"name": "Nezekan",
+"short": "NEZ",
+"faction": "Elyos"
+},
+"1303": {
+"region": "eu",
+"name": "Vaizel",
+"short": "VAI",
+"faction": "Elyos"
+},
+"1304": {
+"region": "eu",
+"name": "Kaisinel",
+"short": "KAI",
+"faction": "Elyos"
+},
+"1305": {
+"region": "eu",
+"name": "Yustiel",
+"short": "YUS",
+"faction": "Elyos"
+},
+"1306": {
+"region": "eu",
+"name": "Ariel",
+"short": "ARI",
+"faction": "Elyos"
+},
+"1307": {
+"region": "eu",
+"name": "Fregion",
+"short": "FRE",
+"faction": "Elyos"
+},
+"1308": {
+"region": "eu",
+"name": "Meslamtaeda",
+"short": "MES",
+"faction": "Elyos"
+},
+"1309": {
+"region": "eu",
+"name": "Hithanya",
+"short": "HIT",
+"faction": "Elyos"
+},
+"1310": {
+"region": "eu",
+"name": "Nania",
+"short": "NAN",
+"faction": "Elyos"
+},
+"1311": {
+"region": "eu",
+"name": "Tahavatha",
+"short": "TAH",
+"faction": "Elyos"
+},
+"1312": {
+"region": "eu",
+"name": "Luteros",
+"short": "LUT",
+"faction": "Elyos"
+},
+"1313": {
+"region": "eu",
+"name": "Phernos",
+"short": "PHE",
+"faction": "Elyos"
+},
+"1314": {
+"region": "eu",
+"name": "Daminu",
+"short": "DAM",
+"faction": "Elyos"
+},
+"1315": {
+"region": "eu",
+"name": "Kasaka",
+"short": "KAS",
+"faction": "Elyos"
+},
+"1316": {
+"region": "eu",
+"name": "Bakarma",
+"short": "BAK",
+"faction": "Elyos"
+},
+"1317": {
+"region": "eu",
+"name": "Tsenka",
+"short": "TSE",
+"faction": "Elyos"
+},
+"1318": {
+"region": "eu",
+"name": "Kochi",
+"short": "KOC",
+"faction": "Elyos"
+},
+"1319": {
+"region": "eu",
+"name": "Ishtar",
+"short": "ISH",
+"faction": "Elyos"
+},
+"1320": {
+"region": "eu",
+"name": "Tiamat",
+"short": "TIA",
+"faction": "Elyos"
+},
+"1321": {
+"region": "eu",
+"name": "Gauss",
+"short": "GAU",
+"faction": "Elyos"
+},
+"1322": {
+"region": "eu",
+"name": "Lamuatan",
+"short": "LAM",
+"faction": "Elyos"
+},
+"1323": {
+"region": "eu",
+"name": "Nathara",
+"short": "NAT",
+"faction": "Elyos"
+},
+"1401": {
+"region": "la",
+"name": "Siel",
+"short": "SIE",
+"faction": "Elyos"
+},
+"1402": {
+"region": "la",
+"name": "Nezekan",
+"short": "NEZ",
+"faction": "Elyos"
+},
+"1403": {
+"region": "la",
+"name": "Vaizel",
+"short": "VAI",
+"faction": "Elyos"
+},
+"1404": {
+"region": "la",
+"name": "Kaisinel",
+"short": "KAI",
+"faction": "Elyos"
+},
+"1405": {
+"region": "la",
+"name": "Yustiel",
+"short": "YUS",
+"faction": "Elyos"
+},
+"1406": {
+"region": "la",
+"name": "Ariel",
+"short": "ARI",
+"faction": "Elyos"
+},
+"1501": {
+"region": "as",
+"name": "Siel",
+"short": "SIE",
+"faction": "Elyos"
+},
+"1502": {
+"region": "as",
+"name": "Nezekan",
+"short": "NEZ",
+"faction": "Elyos"
+},
+"1503": {
+"region": "as",
+"name": "Vaizel",
+"short": "VAI",
+"faction": "Elyos"
+},
+"1504": {
+"region": "as",
+"name": "Kaisinel",
+"short": "KAI",
+"faction": "Elyos"
+},
+"1505": {
+"region": "as",
+"name": "Yustiel",
+"short": "YUS",
+"faction": "Elyos"
+},
+"1506": {
+"region": "as",
+"name": "Ariel",
+"short": "ARI",
+"faction": "Elyos"
+},
+"1507": {
+"region": "as",
+"name": "Fregion",
+"short": "FRE",
+"faction": "Elyos"
+},
+"1508": {
+"region": "as",
+"name": "Meslamtaeda",
+"short": "MES",
+"faction": "Elyos"
+},
+"1509": {
+"region": "as",
+"name": "Hithanya",
+"short": "HIT",
+"faction": "Elyos"
+},
+"1510": {
+"region": "as",
+"name": "Nania",
+"short": "NAN",
+"faction": "Elyos"
+},
+"2101": {
+"region": "nae",
+"name": "Israphel",
+"short": "ISR",
+"faction": "Asmodian"
+},
+"2102": {
+"region": "nae",
+"name": "Zikel",
+"short": "ZIK",
+"faction": "Asmodian"
+},
+"2103": {
+"region": "nae",
+"name": "Triniel",
+"short": "TRI",
+"faction": "Asmodian"
+},
+"2104": {
+"region": "nae",
+"name": "Lumiel",
+"short": "LUM",
+"faction": "Asmodian"
+},
+"2105": {
+"region": "nae",
+"name": "Marchutan",
+"short": "MAR",
+"faction": "Asmodian"
+},
+"2106": {
+"region": "nae",
+"name": "Azphel",
+"short": "AZP",
+"faction": "Asmodian"
+},
+"2107": {
+"region": "nae",
+"name": "Ereshkigal",
+"short": "ERE",
+"faction": "Asmodian"
+},
+"2108": {
+"region": "nae",
+"name": "Beritra",
+"short": "BER",
+"faction": "Asmodian"
+},
+"2109": {
+"region": "nae",
+"name": "Nemon",
+"short": "NEM",
+"faction": "Asmodian"
+},
+"2201": {
+"region": "naw",
+"name": "Israphel",
+"short": "ISR",
+"faction": "Asmodian"
+},
+"2202": {
+"region": "naw",
+"name": "Zikel",
+"short": "ZIK",
+"faction": "Asmodian"
+},
+"2203": {
+"region": "naw",
+"name": "Triniel",
+"short": "TRI",
+"faction": "Asmodian"
+},
+"2204": {
+"region": "naw",
+"name": "Lumiel",
+"short": "LUM",
+"faction": "Asmodian"
+},
+"2205": {
+"region": "naw",
+"name": "Marchutan",
+"short": "MAR",
+"faction": "Asmodian"
+},
+"2301": {
+"region": "eu",
+"name": "Israphel",
+"short": "ISR",
+"faction": "Asmodian"
+},
+"2302": {
+"region": "eu",
+"name": "Zikel",
+"short": "ZIK",
+"faction": "Asmodian"
+},
+"2303": {
+"region": "eu",
+"name": "Triniel",
+"short": "TRI",
+"faction": "Asmodian"
+},
+"2304": {
+"region": "eu",
+"name": "Lumiel",
+"short": "LUM",
+"faction": "Asmodian"
+},
+"2305": {
+"region": "eu",
+"name": "Marchutan",
+"short": "MAR",
+"faction": "Asmodian"
+},
+"2306": {
+"region": "eu",
+"name": "Azphel",
+"short": "AZP",
+"faction": "Asmodian"
+},
+"2307": {
+"region": "eu",
+"name": "Ereshkigal",
+"short": "ERE",
+"faction": "Asmodian"
+},
+"2308": {
+"region": "eu",
+"name": "Beritra",
+"short": "BER",
+"faction": "Asmodian"
+},
+"2309": {
+"region": "eu",
+"name": "Nemon",
+"short": "NEM",
+"faction": "Asmodian"
+},
+"2310": {
+"region": "eu",
+"name": "Hadala",
+"short": "HAD",
+"faction": "Asmodian"
+},
+"2311": {
+"region": "eu",
+"name": "Ludra",
+"short": "LUD",
+"faction": "Asmodian"
+},
+"2312": {
+"region": "eu",
+"name": "Ulgorn",
+"short": "ULG",
+"faction": "Asmodian"
+},
+"2313": {
+"region": "eu",
+"name": "Munin",
+"short": "MUN",
+"faction": "Asmodian"
+},
+"2314": {
+"region": "eu",
+"name": "Odar",
+"short": "ODA",
+"faction": "Asmodian"
+},
+"2315": {
+"region": "eu",
+"name": "Zemurru",
+"short": "ZEM",
+"faction": "Asmodian"
+},
+"2316": {
+"region": "eu",
+"name": "Kromede",
+"short": "KRO",
+"faction": "Asmodian"
+},
+"2317": {
+"region": "eu",
+"name": "Quai",
+"short": "QUA",
+"faction": "Asmodian"
+},
+"2318": {
+"region": "eu",
+"name": "Baba",
+"short": "BAB",
+"faction": "Asmodian"
+},
+"2319": {
+"region": "eu",
+"name": "Fafnir",
+"short": "FAF",
+"faction": "Asmodian"
+},
+"2320": {
+"region": "eu",
+"name": "Indnath",
+"short": "IND",
+"faction": "Asmodian"
+},
+"2321": {
+"region": "eu",
+"name": "Agnita",
+"short": "AGN",
+"faction": "Asmodian"
+},
+"2322": {
+"region": "eu",
+"name": "Atiel",
+"short": "ATI",
+"faction": "Asmodian"
+},
+"2323": {
+"region": "eu",
+"name": "Tassin",
+"short": "TAS",
+"faction": "Asmodian"
+},
+"2401": {
+"region": "la",
+"name": "Israphel",
+"short": "ISR",
+"faction": "Asmodian"
+},
+"2402": {
+"region": "la",
+"name": "Zikel",
+"short": "ZIK",
+"faction": "Asmodian"
+},
+"2403": {
+"region": "la",
+"name": "Triniel",
+"short": "TRI",
+"faction": "Asmodian"
+},
+"2404": {
+"region": "la",
+"name": "Lumiel",
+"short": "LUM",
+"faction": "Asmodian"
+},
+"2405": {
+"region": "la",
+"name": "Marchutan",
+"short": "MAR",
+"faction": "Asmodian"
+},
+"2406": {
+"region": "la",
+"name": "Azphel",
+"short": "AZP",
+"faction": "Asmodian"
+},
+"2501": {
+"region": "as",
+"name": "Israphel",
+"short": "ISR",
+"faction": "Asmodian"
+},
+"2502": {
+"region": "as",
+"name": "Zikel",
+"short": "ZIK",
+"faction": "Asmodian"
+},
+"2503": {
+"region": "as",
+"name": "Triniel",
+"short": "TRI",
+"faction": "Asmodian"
+},
+"2504": {
+"region": "as",
+"name": "Lumiel",
+"short": "LUM",
+"faction": "Asmodian"
+},
+"2505": {
+"region": "as",
+"name": "Marchutan",
+"short": "MAR",
+"faction": "Asmodian"
+},
+"2506": {
+"region": "as",
+"name": "Azphel",
+"short": "AZP",
+"faction": "Asmodian"
+},
+"2507": {
+"region": "as",
+"name": "Ereshkigal",
+"short": "ERE",
+"faction": "Asmodian"
+},
+"2508": {
+"region": "as",
+"name": "Beritra",
+"short": "BER",
+"faction": "Asmodian"
+},
+"2509": {
+"region": "as",
+"name": "Nemon",
+"short": "NEM",
+"faction": "Asmodian"
+},
+"2510": {
+"region": "as",
+"name": "Hadala",
+"short": "HAD",
+"faction": "Asmodian"
+}
+}

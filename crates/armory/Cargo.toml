@@ -1,0 +1,14 @@
+[package]
+name = "armory"
+description = "Death Recap: an attacker's gear score, portrait and gear from the official AION 2 site (opt-in)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+ureq = "3"
+urlencoding = "2"

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Death Recap</title>
+<link rel="stylesheet" href="style.css">
+<script src="app.js" defer></script>
+</head>
+<body>
+<main id="recap" class="recap" hidden>
+  <section class="bar" aria-label="Death recap">
+    <div class="killer">
+      <div class="portrait killer-portrait" data-gear-for="">
+        <img class="face" alt="">
+        <svg class="pvp" viewBox="0 0 24 20" aria-hidden="true"><path d="M3 2l9 9M21 2l-9 9M6.5 14.5L2.5 18.5M17.5 14.5l4 4M5 12l3 3M19 12l-3 3" stroke="#EB3A34" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+        <span class="kills" hidden></span>
+      </div>
+      <div class="who">
+        <span class="name-line"><img class="class" alt=""><button type="button" class="name link"></button></span>
+        <span class="blow"><img class="blow-icon" alt=""><span class="blow-dmg"></span></span>
+      </div>
+    </div>
+    <div class="power">
+      <span class="what-tag" hidden></span>
+      <span class="stat cp" title="Combat power"><img class="i-cp" alt="Combat power"><span class="v"></span><span class="d"></span></span>
+      <span class="stat gs" title="Gear score"><img class="i-gs" alt="Gear score"><span class="v"></span><span class="d"></span></span>
+    </div>
+    <span class="sep"></span>
+    <div class="attackers" title="Everyone who hit you">
+      <div class="faces"></div>
+      <div class="sum"><span class="count"></span><span class="dmg"></span></div>
+    </div>
+    <span class="sep"></span>
+    <div class="cc" data-cc="all">
+      <img class="i-cc" alt="Crowd control">
+      <div class="sum"><span class="cc-time"></span><span class="cc-count"></span></div>
+      <div class="cc-from"></div>
+    </div>
+    <span class="sep"></span>
+    <div class="dealt">
+      <svg class="i-dealt" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20L15 9M15 9l1.5-5.5L21 3l-.5 4.5L15 9zM6.5 13.5l4 4M3.5 18.5l2 2" stroke="#7FE6EE" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      <div class="sum"><span class="n"></span><span class="to"></span></div>
+    </div>
+    <span class="grow"></span>
+    <button type="button" class="key" title="Hold Alt, or click, for the details">Alt</button>
+    <button type="button" class="close" aria-label="Close">×</button>
+  </section>
+  <div class="drop">
+    <div class="drop-inner">
+      <div class="heads"><span>◆ ATTACKER</span><span>◆ POWER</span><span>◆ DAMAGE</span><span>◆ SKILLS</span><span>◆ CC ON YOU</span></div>
+      <div class="rows"></div>
+      <div class="foot"></div>
+    </div>
+  </div>
+  <div class="gear" role="tooltip" hidden></div>
+  <div class="hist" role="tooltip" hidden></div>
+  <div class="ccard" role="tooltip" hidden></div>
+</main>
+</body>
+</html>

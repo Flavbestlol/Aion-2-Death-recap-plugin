@@ -1,0 +1,43 @@
+{
+ "profile": {
+  "characterId": "c2FtcGxlLWNoYXJhY3Rlci1pZC1mb3ItdGVzdHM=",
+  "characterName": "Sampleton",
+  "characterLevel": 40,
+  "className": "Ranger",
+  "combatPower": 123456,
+  "pcId": 14,
+  "raceId": 1,
+  "raceName": "Elyos",
+  "serverId": 1307,
+  "serverName": "Fregion",
+  "profileImage": "https://profileimg.plaync.com/game_profile_images/aion2global/images?gameServerKey=1307&charKey=100000000000000001"
+ },
+ "stat": {
+  "statList": [
+   {
+    "name": "Might",
+    "statSecondList": [
+     "Attack increase +10.8%"
+    ],
+    "type": "STR",
+    "value": 108
+   },
+   {
+    "name": "Dexterity",
+    "statSecondList": [
+     "Evasion increase +2.4%",
+     "Block increase +2.4%",
+     "Critical Hit Resist increase +2.4%"
+    ],
+    "type": "DEX",
+    "value": 24
+   },
+   {
+    "name": "\uc544\uc774\ud15c\ub808\ubca8",
+    "statSecondList": null,
+    "type": "ItemLevel",
+    "value": 2715
+   }
+  ]
+ }
+}

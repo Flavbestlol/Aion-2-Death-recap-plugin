@@ -1,0 +1,254 @@
+[
+  {
+    "after_end_damage": 0,
+    "at_ms": 1792611338356,
+    "attackers": [
+      {
+        "cc": [],
+        "cc_ms": 0,
+        "class": "Assassin",
+        "class_code": "AS",
+        "combat_power": null,
+        "combat_power_vs_me": null,
+        "crit_share": 100,
+        "crits": 4,
+        "damage": 672,
+        "debuffs": [
+          {
+            "abnormal": 130000011,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_008.png",
+            "name": "Insignia",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+                "id": 13720005,
+                "kind": "passive",
+                "name": "Clone Attack"
+              }
+            ],
+            "total_ms": 9995
+          },
+          {
+            "abnormal": 130000011,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_008.png",
+            "name": "Insignia",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+                "id": 13720006,
+                "kind": "passive",
+                "name": "Exploit Weakness"
+              }
+            ],
+            "total_ms": 9995
+          }
+        ],
+        "gear_score": null,
+        "hits": 4,
+        "id": 16072,
+        "joined_ms": 0,
+        "killer": false,
+        "kills_on_you": 1,
+        "legion": null,
+        "monster": null,
+        "name": "#16072",
+        "opener": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_001.png",
+          "id": 13010000,
+          "kind": "skill",
+          "name": "Quick Slice"
+        },
+        "player": true,
+        "server": null,
+        "skills": [
+          {
+            "crits": 2,
+            "damage": 480,
+            "hits": 2,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_001.png",
+              "id": 13010000,
+              "kind": "skill",
+              "name": "Quick Slice"
+            },
+            "specs": [
+              4,
+              5
+            ]
+          },
+          {
+            "crits": 1,
+            "damage": 96,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+              "id": 13720005,
+              "kind": "passive",
+              "name": "Clone Attack"
+            },
+            "specs": []
+          },
+          {
+            "crits": 1,
+            "damage": 96,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+              "id": 13720000,
+              "kind": "passive",
+              "name": "Exploit Weakness"
+            },
+            "specs": []
+          }
+        ],
+        "you_dealt": 0,
+        "you_hits": 0
+      }
+    ],
+    "avoided": [],
+    "cc_count": 0,
+    "cc_ms": 0,
+    "crit_share": 100,
+    "damage": 672,
+    "duration_ms": 153,
+    "final_blow": null,
+    "me": {
+      "combat_power": 168152,
+      "gear_score": 2715
+    },
+    "mobs": null,
+    "outcome": "survived",
+    "you_dealt": 0,
+    "you_hits": 0
+  },
+  {
+    "after_end_damage": 0,
+    "at_ms": 1792611531109,
+    "attackers": [
+      {
+        "cc": [
+          {
+            "abnormal": 100000301,
+            "control": "stun",
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_Abnormal_Stun.png",
+            "name": "Stun",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+                "id": 13070230,
+                "kind": "skill",
+                "name": "Shadowstrike"
+              }
+            ],
+            "total_ms": 3000
+          }
+        ],
+        "cc_ms": 3000,
+        "class": "Assassin",
+        "class_code": "AS",
+        "combat_power": null,
+        "combat_power_vs_me": null,
+        "crit_share": 82,
+        "crits": 1,
+        "damage": 1136,
+        "debuffs": [
+          {
+            "abnormal": 137800071,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_008.png",
+            "name": "Defense Break",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_008.png",
+                "id": 13780007,
+                "kind": "passive",
+                "name": "Defense Break"
+              }
+            ],
+            "total_ms": 10000
+          }
+        ],
+        "gear_score": null,
+        "hits": 2,
+        "id": 16072,
+        "joined_ms": 0,
+        "killer": false,
+        "kills_on_you": 1,
+        "legion": null,
+        "monster": null,
+        "name": "#16072",
+        "opener": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+          "id": 13070000,
+          "kind": "skill",
+          "name": "Shadowstrike"
+        },
+        "player": true,
+        "server": null,
+        "skills": [
+          {
+            "crits": 1,
+            "damage": 935,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+              "id": 13070000,
+              "kind": "skill",
+              "name": "Shadowstrike"
+            },
+            "specs": [
+              2,
+              3
+            ]
+          },
+          {
+            "crits": 0,
+            "damage": 201,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_007.png",
+              "id": 13770000,
+              "kind": "passive",
+              "name": "Ambush Stance"
+            },
+            "specs": []
+          }
+        ],
+        "you_dealt": 0,
+        "you_hits": 0
+      }
+    ],
+    "avoided": [
+      {
+        "actor": 16072,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+          "id": 13070000,
+          "kind": "skill",
+          "name": "Shadowstrike"
+        }
+      }
+    ],
+    "cc_count": 1,
+    "cc_ms": 3000,
+    "crit_share": 82,
+    "damage": 1136,
+    "duration_ms": 153,
+    "final_blow": null,
+    "me": {
+      "combat_power": 168152,
+      "gear_score": 2715
+    },
+    "mobs": null,
+    "outcome": "survived",
+    "you_dealt": 0,
+    "you_hits": 0
+  }
+]
