@@ -23,6 +23,7 @@
 ## Contents
 
 - [What it does](#what-it-does)
+- [How it works](#how-it-works)
 - [Install](#install)
 - [Is it safe?](#is-it-safe)
 - [Troubleshooting](#troubleshooting)
@@ -74,6 +75,18 @@ Death Recap is an add-on of **[Flav-Toolkit](https://github.com/Flavbestlol/flav
 - **The HUD** every Flav-Toolkit add-on shares (the default), or **the game's own look**.
 - **On the dock**: a death lights up Death Recap's skull with a note, *Killed by Sampleton · 140.6K CP*, and the killer's class emblem. It's taken back when you're up again.
 - **From the hub**: **Open** shows the last recap, **Settings** opens these settings: online lookups, a recap after every fight (not only a death or a lost duel), how long to remember who killed you.
+
+## How it works
+
+<p align="center">
+  <img src="docs/how-it-works.png" alt="AION 2, then Flav-Toolkit, then Death Recap, then the recap" width="100%">
+</p>
+
+1. **Flav-Toolkit** reads what the game already sends to your PC: every hit, heal, buff and death around you, with the skills' names and icons. It never sends anything to the game.
+2. It hands that to its add-ons over a local feed. **Death Recap** keeps the last fight in memory: who hit you, with what, when, what controlled you and who landed the last blow.
+3. When you fall, **the recap** opens at the top of the screen, and a note lights up Death Recap's skull on Flav-Toolkit's dock. Flav-Toolkit's hub starts and stops Death Recap for you.
+
+Only if you turn on online lookups does it ask the official AION 2 site for an attacker's gear score, portrait and gear.
 
 ## Install
 

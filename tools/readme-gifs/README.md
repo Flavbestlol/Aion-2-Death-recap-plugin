@@ -11,7 +11,7 @@ cd tools/readme-gifs
 python3 rec.py                             # out/overview.gif, details.gif, lookups.gif, looks.gif
 python3 rec.py details                     # one of them
 python3 shot.py                            # out/bar.png, out/details.png: the overlay alone, 2x
-python3 banner/snap.py                     # docs/banner.jpg, docs/social-preview.jpg
+python3 banner/snap.py                     # docs/banner.jpg, docs/social-preview.jpg, docs/how-it-works.png
 cp out/*.gif ../../docs/                   # after looking at them
 ```
 

@@ -70,6 +70,7 @@ FONTS = {
     "BarlowSemiCondensed-Bold.ttf": "ofl/barlowsemicondensed/BarlowSemiCondensed-Bold.ttf",
     "OpenSans.ttf": "ofl/opensans/OpenSans%5Bwdth,wght%5D.ttf",
     "Cinzel.ttf": "ofl/cinzel/Cinzel%5Bwght%5D.ttf",  # the banner's title
+    "Marcellus-Regular.ttf": "ofl/marcellus/Marcellus-Regular.ttf",  # the how-it-works picture
 }
 
 
@@ -293,7 +294,7 @@ def lookups(pw):
     r.cap()
     r.move(930, 300)
     r.wait(700)
-    r.finish(TALL)
+    r.finish(TALL, fps=8, colors=96)
 
 
 def looks(pw):
