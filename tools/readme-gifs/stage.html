@@ -1,0 +1,13 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>stage</title>
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#000}
+#bg{position:fixed;inset:0;background:url(bg1.png) center/cover}
+iframe{position:absolute;border:0;background:transparent}
+#overlay{left:50%;top:0;width:900px;height:60px;transform:translateX(-50%);display:none}
+#settings{width:330px;height:302px;left:calc(50% - 165px);top:calc(50% - 150px);display:none}
+</style></head>
+<body><div id="bg"></div>
+<iframe id="overlay" name="overlay" src="ui/index.html" allowtransparency="true"></iframe>
+<iframe id="settings" name="settings" src="ui/settings.html" allowtransparency="true"></iframe>
+</body></html>

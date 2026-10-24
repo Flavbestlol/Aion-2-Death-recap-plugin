@@ -1,0 +1,9 @@
+# Built or private: the stage folder, recordings, frames, outputs and the
+# two background screenshots (a clean screenshot of the game, never committed).
+/www/
+/tmp/
+/out/
+/frames/
+/bg1.png
+/bg2.png
+__pycache__/
