@@ -29,6 +29,10 @@ fn frames(text: &str) -> Vec<(i64, Vec<u8>)> {
         .filter(|l| !l.starts_with('#') && !l.trim().is_empty())
         .filter_map(|l| {
             let (ms, hex) = l.split_once(' ')?;
+            // A line of odd length or other than hex digits is skipped.
+            if hex.len() % 2 != 0 || !hex.is_ascii() {
+                return None;
+            }
             let bytes = (0..hex.len())
                 .step_by(2)
                 .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).ok())
