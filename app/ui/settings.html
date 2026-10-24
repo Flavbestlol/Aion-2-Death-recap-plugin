@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Death Recap settings</title>
+<link rel="stylesheet" href="settings.css">
+<script src="settings.js" defer></script>
+</head>
+<body>
+<main class="panel">
+  <header>
+    <svg class="skull" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M12 2.5a7.5 7.5 0 0 0-7.5 7.5c0 2.5 1.2 4.6 3 6v2.6c0 .8.6 1.4 1.4 1.4h6.2c.8 0 1.4-.6 1.4-1.4V16c1.8-1.4 3-3.5 3-6A7.5 7.5 0 0 0 12 2.5z" fill="currentColor"/>
+      <circle cx="9.2" cy="10.6" r="1.9" fill="#0F1115"/><circle cx="14.8" cy="10.6" r="1.9" fill="#0F1115"/>
+    </svg>
+    <div class="title"><b>Death Recap</b><small id="version"></small></div>
+    <button type="button" class="close" id="close" aria-label="Close">×</button>
+  </header>
+  <div class="opt">
+    <span>Look up attackers online<small>Gear score, portrait and gear, from the official AION 2 site. Sends their names only</small></span>
+    <button type="button" class="sw" role="switch" data-key="online_lookups"></button>
+  </div>
+  <div class="opt">
+    <span>Show after every fight<small>Not only after a death or a lost duel</small></span>
+    <button type="button" class="sw" role="switch" data-key="every_fight"></button>
+  </div>
+  <div class="opt">
+    <span>Remember who killed you</span>
+    <div class="seg" id="history">
+      <button type="button" data-value="session">This session</button>
+      <button type="button" data-value="day">A day</button>
+      <button type="button" data-value="three_days">3 days</button>
+    </div>
+  </div>
+  <div class="opt">
+    <span>Skull icon by the minimap<small>Turned off: start Death Recap again for these settings</small></span>
+    <button type="button" class="sw" role="switch" data-key="icon"></button>
+  </div>
+  <footer id="status"></footer>
+</main>
+</body>
+</html>

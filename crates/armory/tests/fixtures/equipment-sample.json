@@ -1,0 +1,37 @@
+{
+ "equipment": {
+  "equipmentList": [
+   {
+    "enchantLevel": 15,
+    "exceedLevel": 5,
+    "grade": "Unique",
+    "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/Icon_WP_BW_0100_T06.png",
+    "id": 110430104,
+    "name": "Splendent Wise Dragon Lord Bow",
+    "slotPos": 1,
+    "slotPosName": "MainHand"
+   },
+   {
+    "enchantLevel": 15,
+    "exceedLevel": 4,
+    "grade": "Unique",
+    "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/Icon_Weapon_Guarder_U_013.png",
+    "id": 115030102,
+    "name": "Splendent Wise Dragon Lord Guard",
+    "slotPos": 2,
+    "slotPosName": "SubHand"
+   },
+   {
+    "enchantLevel": 14,
+    "exceedLevel": 0,
+    "grade": "Unique",
+    "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/Icon_Equip_AR_L_Idris_01_Torso.png",
+    "id": 210130053,
+    "name": "Nuakum Breastplate",
+    "slotPos": 5,
+    "slotPosName": "Torso"
+   }
+  ],
+  "skinList": []
+ }
+}

@@ -1,0 +1,500 @@
+[
+  {
+    "after_end_damage": 608,
+    "at_ms": 1792612625578,
+    "attackers": [
+      {
+        "cc": [
+          {
+            "abnormal": 100000701,
+            "control": "blind",
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_Abnormal_Blind.png",
+            "name": "Blind",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_005.png",
+                "id": 13050240,
+                "kind": "skill",
+                "name": "Flash Slice"
+              }
+            ],
+            "total_ms": 3000
+          },
+          {
+            "abnormal": 100000321,
+            "control": "knock",
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_Abnormal_Knockdown.png",
+            "name": "Knockdown",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_020.png",
+                "id": 13220007,
+                "kind": "skill",
+                "name": "Shadow Fall"
+              }
+            ],
+            "total_ms": 3000
+          },
+          {
+            "abnormal": 100000301,
+            "control": "stun",
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_Abnormal_Stun.png",
+            "name": "Stun",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+                "id": 13070230,
+                "kind": "skill",
+                "name": "Shadowstrike"
+              }
+            ],
+            "total_ms": 2528
+          }
+        ],
+        "cc_ms": 5528,
+        "class": "Assassin",
+        "class_code": "AS",
+        "combat_power": null,
+        "combat_power_vs_me": null,
+        "crit_share": 60,
+        "crits": 31,
+        "damage": 28142,
+        "debuffs": [
+          {
+            "abnormal": 100000801,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_Abnormal_Blockade.png",
+            "name": "Seal",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+                "id": 13070230,
+                "kind": "skill",
+                "name": "Shadowstrike"
+              }
+            ],
+            "total_ms": 4990
+          },
+          {
+            "abnormal": 137300071,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_003.png",
+            "name": "Poison",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_003.png",
+                "id": 13730007,
+                "kind": "passive",
+                "name": "Poison"
+              }
+            ],
+            "total_ms": 10000
+          },
+          {
+            "abnormal": 137800071,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_008.png",
+            "name": "Defense Break",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_008.png",
+                "id": 13780007,
+                "kind": "passive",
+                "name": "Defense Break"
+              }
+            ],
+            "total_ms": 10000
+          },
+          {
+            "abnormal": 130000011,
+            "control": null,
+            "count": 6,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_008.png",
+            "name": "Insignia",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+                "id": 13720008,
+                "kind": "passive",
+                "name": "Exploit Weakness"
+              }
+            ],
+            "total_ms": 38358
+          },
+          {
+            "abnormal": 130000011,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_008.png",
+            "name": "Insignia",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+                "id": 13720005,
+                "kind": "passive",
+                "name": "Clone Attack"
+              }
+            ],
+            "total_ms": 12200
+          },
+          {
+            "abnormal": 130000011,
+            "control": null,
+            "count": 1,
+            "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_008.png",
+            "name": "Insignia",
+            "sources": [
+              {
+                "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+                "id": 13270010,
+                "kind": "skill",
+                "name": "Savage Fang"
+              }
+            ],
+            "total_ms": 11400
+          }
+        ],
+        "gear_score": null,
+        "hits": 58,
+        "id": 128,
+        "joined_ms": 0,
+        "killer": true,
+        "kills_on_you": 1,
+        "legion": null,
+        "monster": null,
+        "name": "#128",
+        "opener": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+          "id": 13070000,
+          "kind": "skill",
+          "name": "Shadowstrike"
+        },
+        "player": true,
+        "server": null,
+        "skills": [
+          {
+            "crits": 6,
+            "damage": 9661,
+            "hits": 11,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_035.png",
+              "id": 13350000,
+              "kind": "skill",
+              "name": "Heart Gore"
+            },
+            "specs": [
+              1,
+              5
+            ]
+          },
+          {
+            "crits": 2,
+            "damage": 3581,
+            "hits": 4,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_005.png",
+              "id": 13050000,
+              "kind": "skill",
+              "name": "Flash Slice"
+            },
+            "specs": [
+              2,
+              4
+            ]
+          },
+          {
+            "crits": 4,
+            "damage": 3293,
+            "hits": 6,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+              "id": 13270000,
+              "kind": "skill",
+              "name": "Savage Fang"
+            },
+            "specs": [
+              1
+            ]
+          },
+          {
+            "crits": 0,
+            "damage": 3058,
+            "hits": 2,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_028.png",
+              "id": 13300000,
+              "kind": "skill",
+              "name": "Triniel's Dagger"
+            },
+            "specs": [
+              3
+            ]
+          },
+          {
+            "crits": 8,
+            "damage": 1866,
+            "hits": 8,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_001.png",
+              "id": 13010000,
+              "kind": "skill",
+              "name": "Quick Slice"
+            },
+            "specs": [
+              4,
+              5
+            ]
+          },
+          {
+            "crits": 0,
+            "damage": 1693,
+            "hits": 2,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_020.png",
+              "id": 13220000,
+              "kind": "skill",
+              "name": "Shadow Fall"
+            },
+            "specs": [
+              1,
+              3
+            ]
+          },
+          {
+            "crits": 3,
+            "damage": 1535,
+            "hits": 3,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_010.png",
+              "id": 13800000,
+              "kind": "passive",
+              "name": "Determination"
+            },
+            "specs": []
+          },
+          {
+            "crits": 1,
+            "damage": 987,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_007.png",
+              "id": 13070000,
+              "kind": "skill",
+              "name": "Shadowstrike"
+            },
+            "specs": [
+              2,
+              3
+            ]
+          },
+          {
+            "crits": 1,
+            "damage": 969,
+            "hits": 3,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_007.png",
+              "id": 13770000,
+              "kind": "passive",
+              "name": "Ambush Stance"
+            },
+            "specs": []
+          },
+          {
+            "crits": 3,
+            "damage": 769,
+            "hits": 6,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+              "id": 13720000,
+              "kind": "passive",
+              "name": "Exploit Weakness"
+            },
+            "specs": []
+          },
+          {
+            "crits": 0,
+            "damage": 372,
+            "hits": 6,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_003.png",
+              "id": 13730007,
+              "kind": "passive",
+              "name": "Poison"
+            },
+            "specs": []
+          },
+          {
+            "crits": 2,
+            "damage": 218,
+            "hits": 5,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_029.png",
+              "id": 13310000,
+              "kind": "skill",
+              "name": "Illusive Clone"
+            },
+            "specs": [
+              4
+            ]
+          },
+          {
+            "crits": 1,
+            "damage": 140,
+            "hits": 1,
+            "skill": {
+              "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_Passive_002.png",
+              "id": 13720005,
+              "kind": "passive",
+              "name": "Clone Attack"
+            },
+            "specs": []
+          }
+        ],
+        "you_dealt": 0,
+        "you_hits": 0
+      }
+    ],
+    "avoided": [
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_005.png",
+          "id": 13050000,
+          "kind": "skill",
+          "name": "Flash Slice"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_020.png",
+          "id": 13220000,
+          "kind": "skill",
+          "name": "Shadow Fall"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_020.png",
+          "id": 13220000,
+          "kind": "skill",
+          "name": "Shadow Fall"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_020.png",
+          "id": 13220000,
+          "kind": "skill",
+          "name": "Shadow Fall"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_005.png",
+          "id": 13050000,
+          "kind": "skill",
+          "name": "Flash Slice"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_005.png",
+          "id": 13050000,
+          "kind": "skill",
+          "name": "Flash Slice"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+          "id": 13270000,
+          "kind": "skill",
+          "name": "Savage Fang"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+          "id": 13270000,
+          "kind": "skill",
+          "name": "Savage Fang"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+          "id": 13270000,
+          "kind": "skill",
+          "name": "Savage Fang"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+          "id": 13270000,
+          "kind": "skill",
+          "name": "Savage Fang"
+        }
+      },
+      {
+        "actor": 128,
+        "resisted": true,
+        "skill": {
+          "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_025.png",
+          "id": 13270000,
+          "kind": "skill",
+          "name": "Savage Fang"
+        }
+      }
+    ],
+    "cc_count": 3,
+    "cc_ms": 5528,
+    "crit_share": 60,
+    "damage": 28142,
+    "duration_ms": 6235,
+    "final_blow": {
+      "actor": 128,
+      "crit": true,
+      "damage": 104,
+      "skill": {
+        "icon": "https://assets.playnccdn.com/static-aion2-gamedata/resources/ICON_AS_SKILL_001.png",
+        "id": 13010000,
+        "kind": "skill",
+        "name": "Quick Slice"
+      }
+    },
+    "me": {
+      "combat_power": 168152,
+      "gear_score": 2715
+    },
+    "mobs": null,
+    "outcome": "duel_lost",
+    "you_dealt": 0,
+    "you_hits": 0
+  }
+]

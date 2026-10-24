@@ -1,0 +1,16 @@
+[package]
+name = "recap"
+description = "Death Recap's logic: every fight on the player from Flav-Toolkit's events, who hit them, with what, and what controlled them"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+flav-events.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true

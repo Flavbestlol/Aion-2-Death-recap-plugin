@@ -1,0 +1,26 @@
+[workspace]
+resolver = "3"
+members = ["crates/recap", "crates/armory", "app"]
+# Builds fixtures from the core's engine; needs a Flav-Toolkit checkout beside
+# this one (see tools/make-fixtures/README.md).
+exclude = ["tools"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-only"
+authors = ["Flavbest"]
+repository = "https://github.com/Flavbestlol/Aion-2-Death-recap-plugin"
+
+[workspace.dependencies]
+# Flav-Toolkit, the core, pinned by commit (PR #22's merge: events carry names
+# and icons). Upgrade the pin on purpose; events only gain types and fields
+# within a version, so an old pin keeps working with a newer core.
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "7da01de48bb1ef8c341e424d582def2a2780ba16" }
+recap = { path = "crates/recap" }
+armory = { path = "crates/armory" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
