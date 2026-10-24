@@ -652,7 +652,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d045de693cb712d0b22c6a64be5b953f67b3ce00ab5ad3dd5d8b441886ab8e1a"
 dependencies = [
  "quote",
- "syn 3.0.9",
+ "syn 2.0.119",
 ]
 
 [[package]]
@@ -1070,7 +1070,7 @@ dependencies = [
 [[package]]
 name = "flav-addons"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
 dependencies = [
  "flav-events",
  "semver",
@@ -1081,7 +1081,7 @@ dependencies = [
 [[package]]
 name = "flav-events"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
 dependencies = [
  "flav-inventory",
  "schemars 1.2.3",
@@ -1092,7 +1092,7 @@ dependencies = [
 [[package]]
 name = "flav-feed"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
 dependencies = [
  "flav-events",
  "futures-util",
@@ -1105,7 +1105,7 @@ dependencies = [
 [[package]]
 name = "flav-inventory"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
 dependencies = [
  "serde",
 ]
@@ -1113,7 +1113,7 @@ dependencies = [
 [[package]]
 name = "flav-sdk"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=02dafa2803d7f8aafd227e34ee014937b36944d0#02dafa2803d7f8aafd227e34ee014937b36944d0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
 dependencies = [
  "flav-events",
  "serde_json",
@@ -3898,7 +3898,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.4.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix",
  "windows-sys 0.52.0",
