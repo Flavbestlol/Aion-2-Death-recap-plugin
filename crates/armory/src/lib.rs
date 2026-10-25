@@ -157,6 +157,21 @@ pub trait Transport: Send + Sync {
     fn get(&self, url: &str) -> Result<(u16, String), String>;
 }
 
+/// What every request to the site carries: what it wants back, and who is
+/// asking, honestly. Never an `Origin` or a `Referer`: Death Recap is not one
+/// of the site's own pages, and the site answers the same without them.
+pub const HEADERS: &[(&str, &str)] = &[
+    ("accept", "application/json"),
+    (
+        "user-agent",
+        concat!(
+            "Death-Recap/",
+            env!("CARGO_PKG_VERSION"),
+            " (+https://github.com/Flavbestlol/Aion-2-Death-recap-plugin)"
+        ),
+    ),
+];
+
 /// The real site, over HTTPS.
 pub struct Http(ureq::Agent);
 
@@ -172,22 +187,11 @@ impl Default for Http {
 
 impl Transport for Http {
     fn get(&self, url: &str) -> Result<(u16, String), String> {
-        let mut response = self
-            .0
-            .get(url)
-            .header("accept", "application/json")
-            .header("referer", "https://aion2.plaync.com/en-us/characters/index")
-            .header("origin", "https://aion2.plaync.com")
-            .header(
-                "user-agent",
-                concat!(
-                    "Death-Recap/",
-                    env!("CARGO_PKG_VERSION"),
-                    " (+https://github.com/Flavbestlol/Aion-2-Death-recap-plugin)"
-                ),
-            )
-            .call()
-            .map_err(|e| e.to_string())?;
+        let mut request = self.0.get(url);
+        for (name, value) in HEADERS {
+            request = request.header(*name, *value);
+        }
+        let mut response = request.call().map_err(|e| e.to_string())?;
         let status = response.status().as_u16();
         let body = response.body_mut().read_to_string().map_err(|e| e.to_string())?;
         Ok((status, body))

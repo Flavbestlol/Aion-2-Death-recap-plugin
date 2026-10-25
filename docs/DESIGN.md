@@ -1,6 +1,6 @@
 # Death Recap: design
 
-Status: 2026-10-24, v0.3.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `918c6a4` (its PR #4 lets `addon.json` name the add-on's emblem).
+Status: 2026-10-25, v0.3.1. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `918c6a4` (its PR #4 lets `addon.json` name the add-on's emblem).
 
 ```text
 AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)
@@ -40,6 +40,7 @@ Only while the player has them on: the worker asks the setting before every requ
 - **Order**: `RecapView::by_importance`: who killed you, then who opened the fight (the earliest to join), then the rest by damage. Everyone's profile (portrait, combat power, gear score) is asked before anyone's gear, so the faces come first.
 - **When the site refuses or fails**, it asks again rather than giving up: after "too many" (403/429) the armory stops every request for 20 s, twice as long each time the site says it again (at most 5 minutes), back to 20 s after an answer, and the worker waits that out and goes on in the same order; after a network or server error it tries again after 2, 4, 8… s (at most 30 s, 6 tries; "too many" does not use these up). An answer that will not change (no such character, several of that name) is not asked again. A fight's lookups stop after 10 minutes, waits included.
 - **Each answer is sent as it comes** (`Screen::extra`): the profile first, then again with the gear (`gear_ready`), so the card can say the gear is on its way.
+- **What each request carries** (`armory::HEADERS`): `Accept: application/json` and a `User-Agent` that names Death Recap, its version and this repository. Never an `Origin` or a `Referer`: Death Recap is not one of the site's own pages (since 0.3.1; the search, the profile and the gear answered identically without them for five public characters on 2026-10-25, as they did for Dragon Gear). A test holds it.
 - **Portraits** come from the site's image server, which can refuse too: the page loads each aside, shows the class emblem until it is in, and asks again after 2, 4, 8, 15, 30, 60 and 120 s.
 - **Gear**: each item's enchant level, and past +15 its diamond level (`exceedLevel` on the site; the site's blue diamond with the number).
 
