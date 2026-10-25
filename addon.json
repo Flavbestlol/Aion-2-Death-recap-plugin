@@ -4,6 +4,7 @@
   "name": "Death Recap",
   "version": "0.3.0",
   "author": "Flavbest",
+  "emblem": "emblem.png",
   "description": "When you die: who killed you, with what, and what controlled you. Hold Alt (or click the bar) for each attacker.",
   "kind": "external",
   "run": { "exe": "death-recap.exe", "hidden": true },

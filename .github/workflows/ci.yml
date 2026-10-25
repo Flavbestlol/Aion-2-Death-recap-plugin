@@ -40,7 +40,7 @@ jobs:
       - name: Build death-recap.exe
         if: matrix.os == 'windows-latest'
         run: cargo build --release -p death-recap
-      - name: Keep death-recap.exe and its addon.json
+      - name: Keep death-recap.exe, its addon.json and its emblem
         if: matrix.os == 'windows-latest'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -48,4 +48,5 @@ jobs:
           path: |
             target/release/death-recap.exe
             addon.json
+            emblem.png
           retention-days: 30

@@ -137,8 +137,8 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
     let _ = std::fs::remove_dir_all(&core_dir);
 }
 
-/// The manifest beside the program is one the hub lists and starts, and it
-/// asks for exactly the types the reader reads.
+/// The manifest beside the program is one the hub lists and starts, it asks
+/// for exactly the types the reader reads, and the hub can show its emblem.
 #[test]
 fn the_manifest_is_valid() {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..");
@@ -146,5 +146,6 @@ fn the_manifest_is_valid() {
     let m = found.manifest.clone().expect("addon.json");
     assert!(found.ok(), "{:?}", found.problems.iter().map(|p| p.to_string()).collect::<Vec<_>>());
     assert_eq!((m.id.as_str(), m.version.as_str()), (death_recap::ID, death_recap::VERSION));
+    assert!(flav_addons::emblem(&m, &root).is_some(), "emblem.png beside addon.json, a PNG of at most 64 KB");
     assert_eq!(m.events.map(|e| e.types).unwrap_or_default(), reader::TYPES);
 }

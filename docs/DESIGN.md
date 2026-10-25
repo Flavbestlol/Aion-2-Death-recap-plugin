@@ -24,6 +24,7 @@ The core is pinned by commit (`Cargo.toml`, `[workspace.dependencies]`): `flav-e
 
 ## The reader (`app/src/reader.rs`)
 
+- **Its emblem**: `emblem.png` beside `addon.json` (128 px, the winged skull of `docs/emblem.png`, a PNG of 40 KB; the core takes at most 64 KB), named by `"emblem"` in `addon.json`: the hub and the dock show it in their round icon. A test holds the manifest to the core's rules, the emblem included.
 - **Connects** with `flav-sdk` as `death-recap`, asking for the types in `reader::TYPES` (the same list as `addon.json`, held together by a test). Flav-Toolkit not running: it waits and tries every half second; refused (an events version the core does not serve): it says so and tries every 5 s; the core restarted: it connects again, and the core re-sends who the player is at hello.
 - **Every event** goes to `Recorder::push`; the player's own combat power, gear score and server are kept beside it, and the player's HP back above 0 after a death sends *revived* (the death's recap goes away).
 - **Time**: fights also end by time (15 s of nothing, or 3 s after a death for the hits on their way). "Now" is the last event's time plus what has passed since it came, never the wall clock, so a replay (`flav feed`) of an old session ends its fights as the live game would.
