@@ -93,7 +93,7 @@ Only if you turn on online lookups does it ask the official AION 2 site for an a
 You need **Windows 10 or 11** (64-bit), **AION 2** in Borderless or Windowed mode, and **[Flav-Toolkit](https://github.com/Flavbestlol/flav-toolkit)** running. Death Recap reads the game through it; without it, Death Recap waits.
 
 1. Download **`death-recap-<version>.zip`** from the [latest release](../../releases/latest).
-2. Extract it into its own folder inside one of the folders Flav-Toolkit's hub looks in for add-ons, for example `Addons\Death Recap\`. The folder holds `death-recap.exe` and `addon.json`.
+2. Extract it into its own folder inside one of the folders Flav-Toolkit's hub looks in for add-ons, for example `Addons\Death Recap\`. The folder holds `death-recap.exe`, `addon.json` and `emblem.png`.
 3. In the hub, **Death Recap** appears in the list. Click **Start**.
 
 > [!NOTE]
