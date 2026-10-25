@@ -109,8 +109,9 @@ impl Screen for Windows {
         // Tauri's windows are handled on its own thread.
         let app = self.0.clone();
         let _ = self.0.run_on_main_thread(move || match what {
-            // The hub's Open, or Death Recap's icon on the dock.
-            Show::Open => open_last(&app),
+            // The hub's Open, or Death Recap's icon on the dock. (`Toggle`
+            // comes only to an add-on that asks for it in `hello`.)
+            Show::Open | Show::Toggle => open_last(&app),
             Show::Settings => {
                 let _ = open_settings(app);
             }
