@@ -1070,7 +1070,7 @@ dependencies = [
 [[package]]
 name = "flav-addons"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
 dependencies = [
  "flav-events",
  "semver",
@@ -1081,7 +1081,7 @@ dependencies = [
 [[package]]
 name = "flav-events"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
 dependencies = [
  "flav-inventory",
  "schemars 1.2.3",
@@ -1092,7 +1092,7 @@ dependencies = [
 [[package]]
 name = "flav-feed"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
 dependencies = [
  "flav-events",
  "futures-util",
@@ -1105,7 +1105,7 @@ dependencies = [
 [[package]]
 name = "flav-inventory"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
 dependencies = [
  "serde",
 ]
@@ -1113,7 +1113,7 @@ dependencies = [
 [[package]]
 name = "flav-sdk"
 version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=074800a94a0135f5a1cdff9e0db1be46d693d86d#074800a94a0135f5a1cdff9e0db1be46d693d86d"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
 dependencies = [
  "flav-events",
  "serde_json",
