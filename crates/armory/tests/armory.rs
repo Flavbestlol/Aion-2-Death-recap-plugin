@@ -4,7 +4,7 @@
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
-use armory::{Armory, Error, Item, Pace, Profile, Transport, server, servers_named};
+use armory::{Armory, Error, HEADERS, Item, Pace, Profile, Transport, server, servers_named};
 
 const SEARCH: &str = include_str!("fixtures/search-sample.json");
 const INFO: &str = include_str!("fixtures/info-sample.json");
@@ -226,4 +226,27 @@ fn equipment_comes_with_the_games_icons() {
     // Kept: not asked again.
     armory.equipment(&me).unwrap();
     assert_eq!(saved.asked.lock().unwrap().len(), 3);
+}
+
+/// Every request says honestly who is asking and never poses as the site's own
+/// page (no `Origin`, no `Referer`); the three calls go over HTTPS.
+#[test]
+fn the_lookup_is_honest_about_who_asks() {
+    let names: Vec<String> = HEADERS.iter().map(|(n, _)| n.to_ascii_lowercase()).collect();
+    assert!(!names.iter().any(|n| n == "origin" || n == "referer"), "{names:?}");
+    let ua = HEADERS.iter().find(|(n, _)| n.eq_ignore_ascii_case("user-agent")).map(|(_, v)| *v);
+    assert_eq!(
+        ua,
+        Some(concat!(
+            "Death-Recap/",
+            env!("CARGO_PKG_VERSION"),
+            " (+https://github.com/Flavbestlol/Aion-2-Death-recap-plugin)"
+        ))
+    );
+    let (armory, saved) = armory();
+    let me = armory.lookup("Sampleton", 1307).unwrap();
+    armory.equipment(&me).unwrap();
+    let asked = saved.asked.lock().unwrap().clone();
+    assert_eq!(asked.len(), 3, "search, profile, equipment: {asked:?}");
+    assert!(asked.iter().all(|u| u.starts_with("https://")), "{asked:?}");
 }
