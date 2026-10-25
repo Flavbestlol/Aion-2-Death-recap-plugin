@@ -1069,8 +1069,8 @@ dependencies = [
 
 [[package]]
 name = "flav-addons"
-version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
+version = "0.12.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
 dependencies = [
  "flav-events",
  "semver",
@@ -1080,8 +1080,8 @@ dependencies = [
 
 [[package]]
 name = "flav-events"
-version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
+version = "0.12.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
 dependencies = [
  "flav-inventory",
  "schemars 1.2.3",
@@ -1091,8 +1091,8 @@ dependencies = [
 
 [[package]]
 name = "flav-feed"
-version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
+version = "0.12.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
 dependencies = [
  "flav-events",
  "futures-util",
@@ -1104,16 +1104,16 @@ dependencies = [
 
 [[package]]
 name = "flav-inventory"
-version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
+version = "0.12.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "flav-sdk"
-version = "0.1.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75#918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75"
+version = "0.12.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
 dependencies = [
  "flav-events",
  "serde_json",

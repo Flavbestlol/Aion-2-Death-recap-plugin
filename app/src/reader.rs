@@ -127,6 +127,9 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                 Ok(Some(Message::Show(what))) => screen.show(what),
                 // A type newer than this build: skipped.
                 Ok(Some(Message::Unknown(_))) => {}
+                // What only comes with a feature Death Recap does not ask for
+                // (the shared lock, hotkeys, layout mode): never sent to it.
+                Ok(Some(_)) => {}
                 Ok(None) => {
                     if let Some(now) = clock.now() {
                         for f in recorder.tick(now) {
