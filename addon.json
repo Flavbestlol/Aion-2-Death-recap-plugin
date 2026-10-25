@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "death-recap",
   "name": "Death Recap",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Flavbest",
   "emblem": "emblem.png",
   "description": "When you die: who killed you, with what, and what controlled you. Hold Alt (or click the bar) for each attacker.",

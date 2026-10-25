@@ -109,9 +109,10 @@ impl Screen for Windows {
         // Tauri's windows are handled on its own thread.
         let app = self.0.clone();
         let _ = self.0.run_on_main_thread(move || match what {
-            // The hub's Open, or Death Recap's icon on the dock. (`Toggle`
-            // comes only to an add-on that asks for it in `hello`.)
-            Show::Open | Show::Toggle => open_last(&app),
+            // The hub's Open.
+            Show::Open => open_last(&app),
+            // Death Recap's icon on the dock: open, or put away when shown.
+            Show::Toggle => toggle(&app),
             Show::Settings => {
                 let _ = open_settings(app);
             }
@@ -164,6 +165,22 @@ fn open_last(app: &AppHandle) {
     }
 }
 
+/// The dock's icon: the last recap when none is shown, or put the shown
+/// one away, as its × does.
+fn toggle(app: &AppHandle) {
+    match app.get_webview_window("overlay") {
+        Some(window) if window.is_visible().unwrap_or(false) => put_away(app, &window),
+        _ => open_last(app),
+    }
+}
+
+/// Hide the recap; the death's note in the hub and on the dock comes down
+/// with it.
+fn put_away(app: &AppHandle, window: &WebviewWindow) {
+    let _ = window.hide();
+    app.state::<Arc<Shared>>().closed.store(true, Ordering::Relaxed);
+}
+
 /// The overlay's page asks for the height its content needs.
 #[tauri::command]
 fn fit(window: WebviewWindow, height: f64) {
@@ -172,9 +189,7 @@ fn fit(window: WebviewWindow, height: f64) {
 
 #[tauri::command]
 fn hide_overlay(app: AppHandle, window: WebviewWindow) {
-    let _ = window.hide();
-    // The death's note in the hub and on the dock comes down with it.
-    app.state::<Arc<Shared>>().closed.store(true, Ordering::Relaxed);
+    put_away(&app, &window);
 }
 
 /// Open an attacker's official character page (only pages the lookups
