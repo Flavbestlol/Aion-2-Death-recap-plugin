@@ -88,12 +88,15 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
                         kind: EventKind::Hp { id: 12_445, hp: 5_000, source: HpSource::Combat },
                     });
                     let _ = feed.show("death-recap", Show::Settings);
+                    // The dock's icon: Death Recap asked for `toggle`, so it
+                    // gets `Toggle` (an add-on that did not would get `Open`).
+                    let _ = feed.show("death-recap", Show::Toggle);
                 }
                 false
             }
-            // Then: the note taken back, and Settings reached it.
+            // Then: the note taken back, and Settings and the dock's click reached it.
             (Some(_), Some(c)) => {
-                (c.notes.iter().all(|n| !n.title.starts_with("Killed by ")) && !seen.shown.lock().unwrap().is_empty())
+                (c.notes.iter().all(|n| !n.title.starts_with("Killed by ")) && seen.shown.lock().unwrap().len() >= 2)
                     || Instant::now() > deadline
             }
             _ => Instant::now() > deadline,
@@ -129,7 +132,11 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
     assert_eq!(note.title, "Killed by #12645");
     assert_eq!(note.text.as_deref(), Some("Assassin · Flash Slice 647"));
     assert_eq!(note.icon, Some(NoteIcon::Class("Assassin".into())));
-    assert_eq!(*seen.shown.lock().unwrap(), vec![Show::Settings], "the hub's Settings reached Death Recap");
+    assert_eq!(
+        *seen.shown.lock().unwrap(),
+        vec![Show::Settings, Show::Toggle],
+        "the hub's Settings reached Death Recap, and the dock's click as a toggle"
+    );
     assert!(
         feed.clients().iter().all(|c| c.notes.iter().all(|n| !n.title.starts_with("Killed by "))),
         "the note came down when the player was up again"

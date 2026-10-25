@@ -74,6 +74,7 @@ Death Recap is an add-on of **[Flav-Toolkit](https://github.com/Flavbestlol/flav
 
 - **The HUD** every Flav-Toolkit add-on shares (the default), or **the game's own look**.
 - **On the dock**: a death lights up Death Recap's skull with a note, *Killed by Sampleton · 140.6K CP*, and the killer's class emblem. It's taken back when you're up again.
+- **Click the skull on the dock** for the last recap; click it again to put it away.
 - **From the hub**: **Open** shows the last recap, **Settings** opens these settings: online lookups, a recap after every fight (not only a death or a lost duel), how long to remember who killed you.
 
 ## How it works
