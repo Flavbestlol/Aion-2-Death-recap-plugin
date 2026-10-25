@@ -1,21 +1,22 @@
 //! Death Recap's fixtures from the core.
 //!
 //! ```text
-//! cargo run --release -- fixtures          frames/*.txt → crates/recap/tests/fixtures/*.events.jsonl + *.views.json
-//! cargo run --release -- compare <capture>  a recorded session: the built-in recap against this repository's, fight by fight
+//! cargo run --release -- fixtures          frames/*.txt → crates/recap/tests/fixtures/*.events.jsonl, checked against *.views.json
 //! ```
 //!
-//! `fixtures` runs the core's engine over the frame fixtures exactly as the
-//! core's own tests did (the same `me` events at the same moments) and writes
-//! the events one JSON line each, as the feed sends them, and the views the
-//! built-in Death Recap built from them (`flav-recap` with the engine's
-//! names): the views this repository's recap must build from the events alone.
+//! `fixtures` runs the pinned core's engine over the frame fixtures exactly as
+//! the core's own tests did (the same `me` events at the same moments), writes
+//! the events one JSON line each, as the feed sends them, and builds this
+//! repository's views from them. It checks those views against
+//! `*.views.json`: what the built-in Death Recap showed for the same frames.
 //!
-//! `compare` does the same over a whole recorded session (the meter's packet
-//! log or `flav live --record`) and prints every difference. It writes
-//! nothing: a session holds other players' names and stays private.
+//! The built-in recap (`flav-recap`) left the core in its PR #30, so those
+//! views are kept as they are, never rewritten here: they are the reference.
+//! They were made, and a whole recorded session compared fight by fight (63
+//! fights, no difference), against the core at `074800a`; this tool's history
+//! at that pin still has the `compare` command that did it.
 
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use flav_core::{Engine, Event as CoreEvent, EventKind as CoreKind};
 use serde_json::Value;
@@ -56,26 +57,6 @@ const FIXTURES: &[Fixture] = &[
     Fixture { file: "abyss-death-live-2026-10-21", me: 12_445, me_at: None },
 ];
 
-/// The built-in side: the core's recorder and view, the engine for names.
-struct BuiltIn {
-    recorder: flav_recap::Recorder,
-    views: Vec<Value>,
-}
-
-impl BuiltIn {
-    fn push(&mut self, engine: &Engine, e: &CoreEvent) {
-        for f in self.recorder.push(e) {
-            self.view(engine, f);
-        }
-    }
-    fn view(&mut self, engine: &Engine, mut f: flav_recap::Fight) {
-        self.recorder.fill_in(&mut f);
-        let me = flav_recap::view::Me { combat_power: Some(ME_CP), gear_score: Some(ME_GS) };
-        let v = flav_recap::view::RecapView::build(&f, engine, me, &|_| 1);
-        self.views.push(serde_json::to_value(&v).unwrap_or_default());
-    }
-}
-
 /// This repository's side: events as JSON, as the feed sends them.
 #[derive(Default)]
 struct Ours {
@@ -109,8 +90,7 @@ fn main() {
     let args: Vec<String> = std::env::args().skip(1).collect();
     match args.first().map(String::as_str) {
         Some("fixtures") => fixtures(),
-        Some("compare") if args.len() > 1 => compare(Path::new(&args[1])),
-        _ => eprintln!("usage: make-fixtures fixtures | compare <capture.txt>"),
+        _ => eprintln!("usage: make-fixtures fixtures"),
     }
 }
 
@@ -124,71 +104,40 @@ fn fixtures() {
         // As the core's tests did: the player has a name, so the parser reads
         // their HP records.
         engine.storage().append_nickname_authoritative(fx.me, "Player");
-        let mut built_in = BuiltIn { recorder: flav_recap::Recorder::new(), views: Vec::new() };
         let mut ours = Ours::default();
         let mut lines = Vec::new();
         let me = |at_ms| CoreEvent { at_ms, kind: CoreKind::Me { id: fx.me as i64, name: None } };
         let mut said_me = false;
-        let emit =
-            |e: &CoreEvent, engine: &Engine, built_in: &mut BuiltIn, ours: &mut Ours, lines: &mut Vec<String>| {
-                built_in.push(engine, e);
-                let json = serde_json::to_string(e).unwrap_or_default();
-                ours.push(&json);
-                lines.push(json);
-            };
+        let emit = |e: &CoreEvent, ours: &mut Ours, lines: &mut Vec<String>| {
+            let json = serde_json::to_string(e).unwrap_or_default();
+            ours.push(&json);
+            lines.push(json);
+        };
         if fx.me_at.is_none() {
-            emit(&me(0), &engine, &mut built_in, &mut ours, &mut lines);
+            emit(&me(0), &mut ours, &mut lines);
             said_me = true;
         }
         for (ms, frame) in frames(&text) {
             for e in engine.feed("Client:1:2", &frame, ms) {
-                emit(&e, &engine, &mut built_in, &mut ours, &mut lines);
+                emit(&e, &mut ours, &mut lines);
             }
             if !said_me && fx.me_at.is_some_and(|at| ms >= at) {
-                emit(&me(ms), &engine, &mut built_in, &mut ours, &mut lines);
+                emit(&me(ms), &mut ours, &mut lines);
                 said_me = true;
             }
-        }
-        for f in built_in.recorder.finish() {
-            built_in.view(&engine, f);
         }
         for f in ours.recorder.finish() {
             ours.view(f);
         }
         let _ = std::fs::write(out.join(format!("{}.events.jsonl", fx.file)), lines.join("\n") + "\n");
-        let views = serde_json::to_string_pretty(&built_in.views).unwrap_or_default();
-        let _ = std::fs::write(out.join(format!("{}.views.json", fx.file)), views + "\n");
-        println!("{}: {} events, {} fights", fx.file, lines.len(), built_in.views.len());
-        report(&built_in.views, &ours.views);
+        // The built-in's views, kept as they were made (see the top of this file).
+        let built_in: Vec<Value> = std::fs::read_to_string(out.join(format!("{}.views.json", fx.file)))
+            .ok()
+            .and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or_default();
+        println!("{}: {} events, {} fights", fx.file, lines.len(), ours.views.len());
+        report(&built_in, &ours.views);
     }
-}
-
-fn compare(path: &Path) {
-    let Ok(file) = std::fs::File::open(path) else {
-        eprintln!("cannot open {}", path.display());
-        return;
-    };
-    let Ok((rows, _)) = flav_core::capture_file::read(file) else {
-        eprintln!("cannot read {}", path.display());
-        return;
-    };
-    let mut engine = Engine::new();
-    let mut built_in = BuiltIn { recorder: flav_recap::Recorder::new(), views: Vec::new() };
-    let mut ours = Ours::default();
-    for row in &rows {
-        for e in engine.feed(&row.stream, &row.data, row.at_ms) {
-            built_in.push(&engine, &e);
-            ours.push(&serde_json::to_string(&e).unwrap_or_default());
-        }
-    }
-    for f in built_in.recorder.finish() {
-        built_in.view(&engine, f);
-    }
-    for f in ours.recorder.finish() {
-        ours.view(f);
-    }
-    println!("{}: {} fights built in, {} from the events", path.display(), built_in.views.len(), ours.views.len());
-    report(&built_in.views, &ours.views);
 }
 
 /// Every difference between the two sides' views, by path.

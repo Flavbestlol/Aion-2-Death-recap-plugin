@@ -1,6 +1,6 @@
 # Death Recap: design
 
-Status: 2026-10-24, v0.3.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `074800a` (the same code as `02dafa2` before the core moved to a fresh repository).
+Status: 2026-10-24, v0.3.0. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `918c6a4` (its PR #4 lets `addon.json` name the add-on's emblem).
 
 ```text
 AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)

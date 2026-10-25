@@ -1,5 +1,5 @@
 # Turns the core's frame fixtures into the event fixtures Death Recap's tests
-# read, and the built-in recap's views into the views they must match. Needs a
+# read, and checks this repository's views against the built-in recap's. Needs a
 # Flav-Toolkit checkout beside this repository, at the pinned commit, with the
 # meter's parser synced (`python tools/sync_upstream.py` there). Not part of
 # the workspace: CI never builds it.
@@ -14,7 +14,6 @@ publish = false
 
 [dependencies]
 flav-core = { path = "../../../flav-toolkit/crates/flav-core" }
-flav-recap = { path = "../../../flav-toolkit/crates/flav-recap" }
 recap = { path = "../../crates/recap" }
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "074800a94a0135f5a1cdff9e0db1be46d693d86d" }
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "918c6a438d2e6c8d6c5a8ec7130cdfe7c7594a75" }
 serde_json = "1"
