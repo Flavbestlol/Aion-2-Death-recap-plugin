@@ -6,7 +6,7 @@ members = ["crates/recap", "crates/armory", "app"]
 exclude = ["tools"]
 
 [workspace.package]
-version = "0.3.3"
+version = "0.3.4"
 edition = "2024"
 license = "GPL-3.0-only"
 authors = ["Flavbest"]

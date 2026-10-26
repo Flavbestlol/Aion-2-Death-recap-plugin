@@ -107,7 +107,7 @@ Here is exactly what it does:
 - **It only reads.** It reads Flav-Toolkit's local feed. It never reads the game's memory or files, and sends nothing to the game.
 - **It asks Windows two things about the game's window**: whether the game runs as administrator (then <kbd>Alt</kbd> can't be read, and the bar says to click instead), and, when you close the settings with × or Esc, to hand the game its focus back.
 - **Nothing about you leaves your PC.** No telemetry. Its settings, and the history of who killed you (only when you keep it for a day or 3 days), stay in `%APPDATA%\com.flavbest.death-recap\`. Windows' web view keeps its usual cache (the icons and portraits it showed) in `%LOCALAPPDATA%\com.flavbest.death-recap\`.
-- **The network**: the game's icons and font from the game's own servers. Only while online lookups are on, the official AION 2 site, with an attacker's name and server, then the site's own id for them. Nothing about you. Turning lookups off stops them at once. Every host is listed in [`addon.json`](addon.json), and the hub shows them.
+- **The network**: the game's icons and font from the game's own servers. Only while online lookups are on, the official AION 2 site, with an attacker's name and server, then the site's own id for them; their portraits come from the site's picture servers. Nothing about you. Turning lookups off stops them at once. Every host is listed in [`addon.json`](addon.json), and the hub shows them.
 - **It's open.** All the code is in this repository: read it, or build it yourself.
 
 > [!NOTE]

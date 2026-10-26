@@ -49,7 +49,7 @@ checksum = "330a5ed07fa54e4702c9d6c4174f74427fc0ef6e214bbd677ae50a5099946470"
 
 [[package]]
 name = "armory"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "serde",
  "serde_json",
@@ -714,7 +714,7 @@ dependencies = [
 
 [[package]]
 name = "death-recap"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "armory",
  "flav-addons",
@@ -2852,7 +2852,7 @@ checksum = "20675572f6f24e9e76ef639bc5552774ed45f1c30e2951e1e99c59888861c539"
 
 [[package]]
 name = "recap"
-version = "0.3.3"
+version = "0.3.4"
 dependencies = [
  "flav-events",
  "serde",

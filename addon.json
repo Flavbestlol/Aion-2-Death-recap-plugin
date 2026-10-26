@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "death-recap",
   "name": "Death Recap",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "author": "Flavbest",
   "emblem": "emblem.png",
   "description": "When you die: who killed you, with what, and what controlled you. Hold Alt (or click the bar) for each attacker.",
@@ -13,6 +13,6 @@
     "types": ["me", "name", "npc_identified", "player_profile", "player_server", "my_server", "my_combat_power", "my_gear_score", "max_hp", "hp", "died", "hit", "missed", "buff_added", "buff_changed", "buff_removed"]
   },
   "permissions": {
-    "network": ["aion2.plaync.com", "api-search.plaync.com", "assets.playnccdn.com", "profileimg.plaync.com"]
+    "network": ["aion2.plaync.com", "api-search.plaync.com", "assets.playnccdn.com", "profileimg.plaync.com", "fizz-download.playnccdn.com"]
   }
 }

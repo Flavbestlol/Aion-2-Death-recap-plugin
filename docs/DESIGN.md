@@ -1,6 +1,6 @@
 # Death Recap: design
 
-Status: 2026-10-26, v0.3.3. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `affd84c` (0.12.0; its PR #4 lets `addon.json` name the add-on's emblem, its PR #30 adds the dock's `toggle`).
+Status: 2026-10-27, v0.3.4. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `affd84c` (0.12.0; its PR #4 lets `addon.json` name the add-on's emblem, its PR #30 adds the dock's `toggle`).
 
 ```text
 AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)
@@ -81,7 +81,7 @@ Same behaviour as when built in. **Two looks** (`settings.theme`): the HUD every
 - **No icon of its own** (0.3.0): the core's dock has Death Recap's skull; its click is the `show` *Toggle* (0.3.2): open, then put away.
 - **Settings** (`settings.*`, a small panel in the middle of the main screen, opened by the hub's *Settings* or by starting Death Recap again): online lookups (off by default), every fight, how long to remember who killed you (this session, a day, 3 days), the look (HUD or Game). × or Esc closes it and gives the game its focus back; clicking another window closes it and leaves that window in front. Kept in `%APPDATA%\com.flavbest.death-recap\settings.json`; a damaged file is set aside as `settings.json.damaged` and the defaults are used; on the first start (no file), the choices made in Flav-Toolkit when Death Recap was built in are read once from its folder (and its kill history, when kept longer than a session).
 - **Character pages**: `https://aion2.plaync.com/en-us/characters/<server>/<id>?region=<region>` (`armory::page_url`); the page can open only pages the lookups found.
-- **Icons**: the game's own, from its data server, as the events name them; class emblems from the meter's repository, fetched before a build (`tools/class_icons.py`) and compiled in; combat power and gear score marks and the font from the official site. Monsters get a drawn mark.
+- **Icons**: the game's own, from its data server, as the events name them; class emblems from the meter's repository, fetched before a build (`tools/class_icons.py`) and compiled in; combat power and gear score marks and the font from the official site. Monsters get a drawn mark. **Portraits** are the official site's `profileImage` (`profileimg.plaync.com`), which answers with a redirect to the picture on `fizz-download.playnccdn.com`: the window's `img-src` allows both, or every portrait falls back to the class emblem (0.3.0 to 0.3.3, after the audit took the second host out; a test now holds both, and every host the window loads from is declared in `addon.json`).
 - **One instance** (`tauri-plugin-single-instance`).
 
 ## Tests and fixtures
