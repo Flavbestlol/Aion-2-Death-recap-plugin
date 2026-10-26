@@ -41,7 +41,7 @@ Death Recap is an add-on of **[Flav-Toolkit](https://github.com/Flavbestlol/flav
   <img src="docs/overview.gif" alt="The recap bar opening at the top of the screen after a death" width="720">
 </p>
 
-- **A bar at the top of the screen** opens when you die: the killer (portrait or class emblem), the final blow, their combat power and gear score against yours.
+- **A bar at the top of the screen** opens when you die or lose a duel to a player, and says which: the killer (portrait or class emblem), the final blow, their combat power and gear score against yours.
 - **Everyone who hit you**, how long you could not act and why, and what you dealt back.
 - **It goes away by itself** when you're back on your feet.
 
@@ -119,6 +119,12 @@ Here is exactly what it does:
 <summary><b>Nothing shows when I die</b></summary>
 
 Check in Flav-Toolkit's hub that the game is being read and that Death Recap is running. Death Recap opens on a death or a lost duel; for every fight, turn on **Show after every fight** in its settings.
+</details>
+
+<details>
+<summary><b>It opened but I didn't die</b></summary>
+
+The words above the name say why it opened. *Fight over* means **Show after every fight** is on in its settings: turn it off for deaths and lost duels only. If it says *Killed by* or *Duel lost to* while you were fine, use **Report a bug** in Flav-Toolkit's hub on Death Recap's page: its log says which rule fired, and the HP that made it.
 </details>
 
 <details>
