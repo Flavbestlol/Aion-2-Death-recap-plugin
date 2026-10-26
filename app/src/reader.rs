@@ -211,6 +211,26 @@ pub fn death_note(view: &RecapView) -> Option<DeathNote> {
     Some(DeathNote { title, text: text.join(" · "), icon })
 }
 
+/// The hub's log line for a recap shown: which rule opened it and the HP that
+/// said so, with no one's name. *Recap: died · HP 22,189 → 0 · 3 hits from 2 ·
+/// final blow by a monster*.
+pub fn why(fight: &Fight) -> String {
+    let rule = match fight.outcome {
+        Outcome::Died => "died",
+        Outcome::DuelLost => "duel lost",
+        Outcome::Survived => "fight over (Show after every fight is on)",
+    };
+    let mut parts = vec![format!("Recap: {rule}")];
+    let hp = |v: Option<i32>| v.map_or("?".to_string(), |v| thousands(i64::from(v)));
+    parts.push(format!("HP {} → {}", hp(fight.hp_before), hp(fight.lowest_hp)));
+    parts.push(format!("{} hits from {}", fight.hits.len(), fight.attackers.len()));
+    if let Some(blow) = fight.final_blow() {
+        let player = fight.attackers.iter().any(|a| a.id == blow.actor && a.player);
+        parts.push(format!("final blow by a {}", if player { "player" } else { "monster" }));
+    }
+    parts.join(" · ")
+}
+
 /// 140596 → `140.6K`, as the overlay writes it.
 fn short(n: i64) -> String {
     if n >= 1000 { format!("{:.1}K", n as f64 / 1000.0) } else { n.to_string() }
@@ -335,6 +355,9 @@ fn ended(
             .map(|a| (a.name.clone(), kills.by(&a.name).into_iter().take(10).cloned().collect()))
             .collect()
     };
+    // Why it opened, in the hub's log: a bug report then says which rule
+    // fired, with no one's name.
+    let _ = client.log(LogLevel::Info, &why(&fight));
     let recap = Recap { fight_id: fight.end_ms, view, history, extras: HashMap::new() };
     *lock(&shared.last) = Some(recap.clone());
     if fight.outcome == Outcome::Died {
@@ -420,5 +443,44 @@ mod tests {
         let mut ok = Vec::new();
         say(&mut ok, "Connected");
         assert_eq!(ok, b"Connected\n");
+    }
+
+    /// The hub's log says which rule opened a recap, with no one's name.
+    #[test]
+    fn the_log_says_why_a_recap_opened() {
+        use flav_events::event::HpSource;
+        let ev = |at_ms, kind| Event { at_ms, kind };
+        let hit = |at_ms, damage| {
+            ev(
+                at_ms,
+                EventKind::Hit {
+                    actor: 7,
+                    target: 1,
+                    skill: 1_800_000,
+                    damage,
+                    absorbed_by: vec![],
+                    multi_hits: 0,
+                    dot: false,
+                    hit_type: 2,
+                    flags: vec![],
+                    specs: vec![],
+                    class: None,
+                    player_skill: false,
+                    verified: true,
+                    skill_name: None,
+                    skill_icon: None,
+                },
+            )
+        };
+        let hp = |at_ms, hp| ev(at_ms, EventKind::Hp { id: 1, hp, source: HpSource::Combat });
+        let mut r = Recorder::new();
+        let mut fights = Vec::new();
+        for e in [ev(0, EventKind::Me { id: 1, name: None }), hp(1, 22_189), hit(10, 22_189), hp(10, 0)] {
+            fights.extend(r.push(&e));
+        }
+        fights.extend(r.finish());
+        assert_eq!(why(&fights[0]), "Recap: died · HP 22,189 → 0 · 1 hits from 1 · final blow by a monster");
+        fights[0].outcome = Outcome::Survived;
+        assert_eq!(why(&fights[0]), "Recap: fight over (Show after every fight is on) · HP 22,189 → 0 · 1 hits from 1");
     }
 }

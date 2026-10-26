@@ -31,6 +31,8 @@
   // survived fight's recap stay, and the fade-out.
   const WIDTH = 900;
   const DUEL_SHOWN_MS = 20000;
+  // The words above the name: why the recap opened.
+  const OUTCOME = { died: "Killed by", duel_lost: "Duel lost to", survived: "Fight over · top damage" };
   const FIGHT_SHOWN_MS = 12000;
   const FADE_MS = 260;
 
@@ -165,6 +167,10 @@
     const v = recap.view;
     const killerId = v.final_blow?.actor;
     const k = attacker(killerId) || v.attackers[0];
+    // Why it opened, so a recap never looks like it came from nowhere.
+    const why = $(".who .outcome");
+    why.textContent = OUTCOME[v.outcome] || "";
+    why.className = `outcome ${v.outcome}`;
     const kp = $(".killer-portrait");
     kp.dataset.gearFor = k ? k.id : "";
     kp.classList.toggle("killed", !!v.final_blow);

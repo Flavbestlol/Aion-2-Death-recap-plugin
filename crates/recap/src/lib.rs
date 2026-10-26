@@ -3,7 +3,8 @@
 //! A fight starts with the first hit, dodge, resist or crowd control another
 //! entity lands on the player (another debuff joins a fight but does not
 //! start one), and ends when the player dies, loses a duel (a duel
-//! ends at 1 HP), or no one has touched them for `QUIET_MS`. Each finished
+//! ends at 1 HP, after a player's hit), or no one has touched them for
+//! `QUIET_MS`. Each finished
 //! fight says who hit the player, with which skills, for how much, and what
 //! controlled them (stuns, roots, knockdowns…) and for how long.
 //!
@@ -45,7 +46,8 @@ pub const EARLY_MS: i64 = 300_000;
 #[serde(rename_all = "snake_case")]
 pub enum Outcome {
     Died,
-    /// The player's HP stopped at 1 right after a hit: a duel lost.
+    /// The player's HP stopped at 1 right after another player's hit: a duel
+    /// lost.
     DuelLost,
     /// The fight ran out: no one touched the player for `QUIET_MS`.
     Survived,
@@ -511,7 +513,7 @@ impl Recorder {
                         .open
                         .as_ref()
                         .and_then(|o| o.hits.last())
-                        .is_some_and(|h| e.at_ms - h.at_ms <= JUST_BEFORE_MS)
+                        .is_some_and(|h| e.at_ms - h.at_ms <= JUST_BEFORE_MS && self.by_player(h.actor))
                 {
                     done.extend(self.end(Outcome::DuelLost, e.at_ms));
                 }
@@ -652,6 +654,16 @@ impl Recorder {
                 || o.avoided.iter().any(|m| m.actor == actor)
                 || o.debuffs.iter().any(|d| d.caster == actor && d.control.is_some())
         })
+    }
+
+    /// Whether an entity in the fight going on is a player: its hits used a
+    /// player's skills or named a class, or the game sent its profile. Only a
+    /// player can win a duel: HP stopping at 1 after a monster's hit is not
+    /// one (a skill or an effect that keeps the player alive at 1 HP), and the
+    /// fight goes on.
+    fn by_player(&self, actor: i32) -> bool {
+        self.profiles.contains_key(&actor)
+            || self.open.as_ref().and_then(|o| o.kinds.get(&actor)).is_some_and(|k| k.0.is_some() || k.1)
     }
 
     /// A hit on the player, into the fight.

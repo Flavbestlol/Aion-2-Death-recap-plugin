@@ -42,6 +42,8 @@ img { display: block; }
 .portrait .pvp { position: absolute; left: -7px; top: -6px; width: 20px; height: 17px; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)); }
 .kills { position: absolute; right: -6px; bottom: -5px; min-width: 15px; height: 15px; padding: 0 3px; background: #B3261E; color: #FFF; font-size: 10px; font-weight: 700; line-height: 15px; text-align: center; cursor: default; }
 .who { display: flex; flex-direction: column; gap: 3px; }
+.outcome { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.outcome.died, .outcome.duel_lost { color: #F0857F; }
 .name-line { display: flex; align-items: center; gap: 5px; }
 .name-line .class { width: 16px; height: 17px; }
 .name { font-size: 15px; font-weight: 700; color: #FFF; }

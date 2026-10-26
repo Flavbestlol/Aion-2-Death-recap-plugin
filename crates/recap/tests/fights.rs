@@ -222,6 +222,17 @@ fn hit(at_ms: i64, actor: i32, damage: i64) -> Event {
     )
 }
 
+/// A monster's hit: no class, not a player's skill.
+fn mob_hit(at_ms: i64, actor: i32, damage: i64) -> Event {
+    let mut e = hit(at_ms, actor, damage);
+    if let EventKind::Hit { class, player_skill, skill, .. } = &mut e.kind {
+        *class = None;
+        *player_skill = false;
+        *skill = 1_800_000;
+    }
+    e
+}
+
 fn hp(at_ms: i64, hp: i32) -> Event {
     ev(at_ms, EventKind::Hp { id: 1, hp, source: HpSource::Combat })
 }
@@ -281,6 +292,17 @@ fn a_duel_ends_at_one_hp() {
     let f = run(&[me(), hp(1, 1000), hit(10, 7, 999), hp(10, 1)]);
     assert_eq!(f[0].outcome, Outcome::DuelLost);
     assert_eq!(f[0].final_blow().map(|h| h.damage), Some(999));
+}
+
+/// Only a player wins a duel. A monster's hit that leaves the player at 1 HP
+/// (an effect that keeps them alive) opens no recap: the fight goes on, and
+/// ends as any fight does.
+#[test]
+fn a_monster_leaving_one_hp_is_no_lost_duel() {
+    let f = run(&[me(), hp(1, 20_000), mob_hit(10, 7, 19_999), hp(10, 1), hp(5_000, 4_000)]);
+    assert_eq!(f.len(), 1);
+    assert_eq!(f[0].outcome, Outcome::Survived);
+    assert_eq!(f[0].lowest_hp, Some(1));
 }
 
 #[test]
