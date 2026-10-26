@@ -156,3 +156,32 @@ fn the_manifest_is_valid() {
     assert!(flav_addons::emblem(&m, &root).is_some(), "emblem.png beside addon.json, a PNG of at most 64 KB");
     assert_eq!(m.events.map(|e| e.types).unwrap_or_default(), reader::TYPES);
 }
+
+/// A portrait's address on the official site (`profileimg.plaync.com`)
+/// answers with a redirect to the picture itself on `fizz-download.playnccdn.com`
+/// (checked 2026-10-27). The window follows it only when both hosts may load
+/// pictures; without the second every portrait fell back to the class emblem
+/// (0.3.0 to 0.3.3). Every host the window loads from is also one `addon.json`
+/// declares, so the hub shows it.
+#[test]
+fn portraits_can_load_and_every_host_is_declared() {
+    let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    let conf: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(root.join("tauri.conf.json")).unwrap()).unwrap();
+    let csp = &conf["app"]["security"]["csp"];
+    let img = csp["img-src"].as_str().unwrap();
+    for host in ["https://profileimg.plaync.com", "https://fizz-download.playnccdn.com"] {
+        assert!(img.split_whitespace().any(|s| s == host), "img-src lacks {host}");
+    }
+    let manifest: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(root.join("../addon.json")).unwrap()).unwrap();
+    let declared: Vec<&str> =
+        manifest["permissions"]["network"].as_array().unwrap().iter().filter_map(|h| h.as_str()).collect();
+    for directive in ["img-src", "font-src", "connect-src"] {
+        for source in csp[directive].as_str().unwrap_or("").split_whitespace() {
+            if let Some(host) = source.strip_prefix("https://") {
+                assert!(declared.contains(&host), "{directive} loads from {host}, which addon.json does not declare");
+            }
+        }
+    }
+}
