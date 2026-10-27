@@ -16,7 +16,7 @@ use std::sync::atomic::Ordering;
 use std::time::Duration;
 
 use death_recap::reader::{self, Screen};
-use death_recap::settings::{History, Settings, Theme};
+use death_recap::settings::Settings;
 use death_recap::store::{Extra, Recap, Shared, lock};
 use flav_sdk::Show;
 use serde::{Deserialize, Serialize};
@@ -104,6 +104,9 @@ impl Screen for Windows {
     fn status(&self, text: &str) {
         // The hub writes what an add-on prints into its log.
         reader::say(&mut std::io::stdout(), text);
+    }
+    fn settings_changed(&self) {
+        emit_settings(&self.0);
     }
     fn show(&self, what: Show) {
         // Tauri's windows are handled on its own thread.
@@ -258,32 +261,35 @@ fn settings_get(shared: tauri::State<'_, Arc<Shared>>) -> PanelState {
     }
 }
 
-/// One change from the panel.
+/// One change from the panel: a switch's `on`, or a choice's `value`.
 #[derive(Deserialize)]
-#[serde(tag = "key", rename_all = "snake_case")]
-enum Change {
-    OnlineLookups { on: bool },
-    EveryFight { on: bool },
-    History { value: History },
-    Theme { value: Theme },
+struct Change {
+    key: String,
+    on: Option<bool>,
+    value: Option<String>,
 }
 
+/// The panel's change goes the hub's way (`Shared::change`): saved, and the
+/// hub is told the new values by the reader.
 #[tauri::command]
 fn settings_set(app: AppHandle, shared: tauri::State<'_, Arc<Shared>>, change: Change) -> PanelState {
-    {
-        let mut s = lock(&shared.settings);
-        match change {
-            Change::OnlineLookups { on } => s.online_lookups = on,
-            Change::EveryFight { on } => s.every_fight = on,
-            Change::History { value } => s.history = value,
-            Change::Theme { value } => s.theme = value,
-        }
+    let value = match (change.on, change.value) {
+        (Some(on), _) => serde_json::Value::Bool(on),
+        (None, Some(v)) => serde_json::Value::String(v),
+        (None, None) => serde_json::Value::Null,
+    };
+    if shared.change(&change.key, &value) {
+        emit_settings(&app);
     }
-    shared.save_settings();
-    shared.save_history();
-    let theme = lock(&shared.settings).theme;
-    let _ = app.emit_to("overlay", "theme", theme);
     settings_get(shared)
+}
+
+/// The settings changed: the overlay takes the look, an open panel shows
+/// the new values.
+fn emit_settings(app: &AppHandle) {
+    let theme = lock(&app.state::<Arc<Shared>>().settings).theme;
+    let _ = app.emit_to("overlay", "theme", theme);
+    let _ = app.emit_to("settings", "settings-changed", ());
 }
 
 /// `give_back`: the player closed it (× or Esc), so the game gets its focus

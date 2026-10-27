@@ -2,11 +2,13 @@
 //! the live Abyss death (the fixture's events, as the core read them), and
 //! the reader shows the recap, writes its line in the hub, and raises its note.
 
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use death_recap::reader::{self, Screen};
+use death_recap::settings::{History, Theme};
 use death_recap::store::{Extra, Recap, Shared};
 use flav_events::event::HpSource;
 use flav_events::feed::{CoreStatus, NoteIcon, NoteLevel, Show};
@@ -142,6 +144,89 @@ fn a_death_on_the_feed_becomes_a_recap_and_a_note() {
         "the note came down when the player was up again"
     );
     let _ = std::fs::remove_dir_all(&core_dir);
+}
+
+/// Its settings in the hub, through a real 0.18.0 feed: described on
+/// connecting (the look linked to the shared `look`); a change from the hub
+/// applied, saved and described again; a change from its own panel described
+/// to the hub too. Both places always show the same values.
+#[test]
+fn the_hub_shows_and_changes_its_settings() {
+    #[derive(Default)]
+    struct Changes(Mutex<usize>);
+    impl Screen for Changes {
+        fn recap(&self, _: &Recap) {}
+        fn extra(&self, _: i64, _: i32, _: &Extra) {}
+        fn revived(&self) {}
+        fn settings_changed(&self) {
+            *self.0.lock().unwrap() += 1;
+        }
+    }
+    let core_dir = dir("settings-core");
+    let feed = Feed::start(Options { dir: core_dir.clone(), port: 0, core: "test".into() }).unwrap();
+    let data = dir("settings-data");
+    let shared = Shared::new(data.clone(), None);
+    let changes = Arc::new(Changes::default());
+    let screen: Arc<dyn Screen> = changes.clone();
+    let mut config = death_recap::config();
+    config.dir = Some(core_dir.clone());
+
+    // What the hub holds for Death Recap: key → value, and the look's link.
+    let in_hub = || {
+        feed.addon_settings().get("death-recap").map(|d| {
+            let items: Vec<_> = d.groups.iter().flat_map(|g| g.items.clone()).collect();
+            let values: HashMap<String, serde_json::Value> = items
+                .iter()
+                .map(|i| (i.key.clone(), serde_json::to_value(&i.control).unwrap()["value"].clone()))
+                .collect();
+            let look = items.iter().find(|i| i.key == "theme").and_then(|i| i.shared.clone()).map(|l| l.id);
+            (values, look)
+        })
+    };
+    let deadline = Instant::now() + Duration::from_secs(30);
+    let step = Mutex::new(0);
+    let first = Mutex::new(None);
+    let stop = || {
+        let mut step = step.lock().unwrap();
+        match (*step, in_hub()) {
+            // Described on connecting, as the settings are: the defaults.
+            (0, Some(seen)) => {
+                *first.lock().unwrap() = Some(seen);
+                feed.send_setting("death-recap", "theme", "game".into()).unwrap();
+                feed.send_setting("death-recap", "history", "day".into()).unwrap();
+                *step = 1;
+            }
+            // The hub's changes applied and described again; then one from
+            // the panel.
+            (1, Some((v, _))) if v["theme"] == "game" && v["history"] == "day" => {
+                assert!(shared.change("every_fight", &serde_json::Value::Bool(true)));
+                *step = 2;
+            }
+            (2, Some((v, _))) if v["every_fight"] == true => return true,
+            _ => {}
+        }
+        Instant::now() > deadline
+    };
+    reader::run(shared.clone(), screen, &config, &stop);
+
+    let (values, look) = first.lock().unwrap().clone().expect("Death Recap described its settings");
+    assert_eq!(values["online_lookups"], false, "lookups off unless chosen");
+    assert_eq!((values["theme"].as_str(), values["history"].as_str()), (Some("hud"), Some("session")));
+    assert_eq!(values.len(), 4);
+    assert_eq!(look.as_deref(), Some("look"), "the look is the shared one");
+
+    let (now, _) = in_hub().unwrap();
+    assert_eq!(
+        (now["theme"].as_str(), now["history"].as_str(), now["every_fight"].as_bool()),
+        (Some("game"), Some("day"), Some(true)),
+        "the hub shows what Death Recap keeps"
+    );
+    let saved = death_recap::settings::Settings::load(&data, None);
+    assert_eq!((saved.theme, saved.history, saved.every_fight), (Theme::Game, History::Day, true), "saved to its file");
+    assert!(data.join("history.json").exists(), "a day of history is kept on disk now");
+    assert!(*changes.0.lock().unwrap() >= 2, "the windows followed both changes from the hub");
+    let _ = std::fs::remove_dir_all(&core_dir);
+    let _ = std::fs::remove_dir_all(&data);
 }
 
 /// The manifest beside the program is one the hub lists and starts, it asks

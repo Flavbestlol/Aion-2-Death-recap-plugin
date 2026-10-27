@@ -15,9 +15,12 @@ pub mod store;
 pub const ID: &str = "death-recap";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-/// How Death Recap introduces itself to the feed. It asks for `toggle`: a
+/// How Death Recap introduces itself to the feed. It asks for `toggle` (a
 /// click on its icon in the dock opens the last recap, and a second click
-/// puts it away again.
+/// puts it away again) and `settings` (its settings in the hub, core 0.18.0).
 pub fn config() -> flav_sdk::Config {
-    flav_sdk::Config::new(ID, VERSION, reader::TYPES).features(&["toggle"])
+    flav_sdk::Config::new(ID, VERSION, reader::TYPES).features(FEATURES)
 }
+
+/// What Death Recap asks of the feed beyond events.
+pub const FEATURES: &[&str] = &["toggle", "settings"];

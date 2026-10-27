@@ -147,21 +147,21 @@ checksum = "1c66915cc5391097de7a2b0b972e8505aa33c0df401fd3a6811dbdb32881ba48"
 
 [[package]]
 name = "flav-core"
-version = "0.12.0"
+version = "0.18.0"
 dependencies = [
  "a2tools-dps-meter",
  "chrono",
- "flav-events 0.12.0",
- "flav-inventory 0.12.0",
+ "flav-events 0.18.0",
+ "flav-inventory 0.18.0",
  "serde",
  "serde_json",
 ]
 
 [[package]]
 name = "flav-events"
-version = "0.12.0"
+version = "0.18.0"
 dependencies = [
- "flav-inventory 0.12.0",
+ "flav-inventory 0.18.0",
  "schemars",
  "serde",
  "serde_json",
@@ -169,10 +169,10 @@ dependencies = [
 
 [[package]]
 name = "flav-events"
-version = "0.12.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
+version = "0.18.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
 dependencies = [
- "flav-inventory 0.12.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8)",
+ "flav-inventory 0.18.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e)",
  "schemars",
  "serde",
  "serde_json",
@@ -180,15 +180,15 @@ dependencies = [
 
 [[package]]
 name = "flav-inventory"
-version = "0.12.0"
+version = "0.18.0"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "flav-inventory"
-version = "0.12.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8#affd84cbd15f75488baefb2f0c74df6f4f4f03f8"
+version = "0.18.0"
+source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
 dependencies = [
  "serde",
 ]
@@ -302,7 +302,7 @@ name = "make-fixtures"
 version = "0.1.0"
 dependencies = [
  "flav-core",
- "flav-events 0.12.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8)",
+ "flav-events 0.18.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e)",
  "recap",
  "serde_json",
 ]
@@ -377,9 +377,9 @@ dependencies = [
 
 [[package]]
 name = "recap"
-version = "0.3.1"
+version = "0.3.4"
 dependencies = [
- "flav-events 0.12.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=affd84cbd15f75488baefb2f0c74df6f4f4f03f8)",
+ "flav-events 0.18.0 (git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e)",
  "serde",
  "serde_json",
 ]
