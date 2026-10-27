@@ -3,7 +3,7 @@
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, AtomicUsize};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -55,6 +55,9 @@ pub struct Shared {
     /// The recap was closed (or went by itself): the reader takes the death's
     /// note back.
     pub closed: AtomicBool,
+    /// A setting changed: the reader describes them to the hub again, so the
+    /// hub and the panel always show the same values.
+    pub settings_changed: AtomicBool,
 }
 
 impl Shared {
@@ -83,6 +86,7 @@ impl Shared {
             status: Mutex::new("Starting".into()),
             fights: AtomicUsize::new(0),
             closed: AtomicBool::new(false),
+            settings_changed: AtomicBool::new(false),
         });
         shared.save_history();
         shared
@@ -110,6 +114,20 @@ impl Shared {
 
     pub fn save_settings(&self) {
         lock(&self.settings).save(&self.dir);
+    }
+
+    /// One setting changed, from the panel or the hub (the same path): set,
+    /// saved, the history kept or deleted as it now says, and marked for the
+    /// reader to describe the settings to the hub again. `false` (nothing
+    /// changed) for a key or value Death Recap does not take.
+    pub fn change(&self, key: &str, value: &serde_json::Value) -> bool {
+        if !lock(&self.settings).apply(key, value) {
+            return false;
+        }
+        self.save_settings();
+        self.save_history();
+        self.settings_changed.store(true, Ordering::Relaxed);
+        true
     }
 }
 

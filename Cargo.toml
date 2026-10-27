@@ -6,7 +6,7 @@ members = ["crates/recap", "crates/armory", "app"]
 exclude = ["tools"]
 
 [workspace.package]
-version = "0.3.4"
+version = "0.3.5"
 edition = "2024"
 license = "GPL-3.0-only"
 authors = ["Flavbest"]
@@ -18,10 +18,10 @@ repository = "https://github.com/Flavbestlol/Aion-2-Death-recap-plugin"
 # `addon.json` may name the add-on's emblem, and the dock's `toggle`).
 # Upgrade the pin on purpose; events only gain types and fields
 # within a version, so an old pin keeps working with a newer core.
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "affd84cbd15f75488baefb2f0c74df6f4f4f03f8" }
-flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "affd84cbd15f75488baefb2f0c74df6f4f4f03f8" }
-flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "affd84cbd15f75488baefb2f0c74df6f4f4f03f8" }
-flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "affd84cbd15f75488baefb2f0c74df6f4f4f03f8" }
+flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
+flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
+flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
+flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
 recap = { path = "crates/recap" }
 armory = { path = "crates/armory" }
 serde = { version = "1", features = ["derive"] }

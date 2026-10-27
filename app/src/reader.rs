@@ -54,6 +54,9 @@ pub trait Screen: Send + Sync {
     fn status(&self, _text: &str) {}
     /// The player pressed the hub's Open (the last recap) or Settings.
     fn show(&self, _what: Show) {}
+    /// A setting changed in the hub: the overlay takes the look, an open
+    /// settings panel shows the new values.
+    fn settings_changed(&self) {}
 }
 
 /// The game's time as the events tell it. A replay (`flav feed`) plays an
@@ -114,6 +117,10 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
         };
         set_status(&shared, &*screen, &format!("Connected: {}", client.status.text));
         let _ = client.log(LogLevel::Info, &format!("Death Recap {} reading the feed", env!("CARGO_PKG_VERSION")));
+        // Its settings in the hub (core 0.18.0; an older core never granted
+        // `settings`, and then nothing is sent).
+        shared.settings_changed.store(false, Ordering::Relaxed);
+        describe(&shared, &mut client);
         let mut last_note = Instant::now() - Duration::from_secs(10);
         loop {
             match client.next(Duration::from_millis(250)) {
@@ -125,6 +132,16 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                 }
                 Ok(Some(Message::Status(s))) => set_status(&shared, &*screen, &format!("Connected: {}", s.text)),
                 Ok(Some(Message::Show(what))) => screen.show(what),
+                // The player changed one in the hub: applied as the panel
+                // applies it, then described again (the value Death Recap
+                // kept, also when it took nothing from it).
+                Ok(Some(Message::Setting { key, value })) => {
+                    if shared.change(&key, &value) {
+                        screen.settings_changed();
+                    } else {
+                        shared.settings_changed.store(true, Ordering::Relaxed);
+                    }
+                }
                 // A type newer than this build: skipped.
                 Ok(Some(Message::Unknown(_))) => {}
                 // What only comes with a feature Death Recap does not ask for
@@ -148,6 +165,11 @@ pub fn run(shared: Arc<Shared>, screen: Arc<dyn Screen>, config: &Config, stop: 
                 && let Some(title) = reading.note.take()
             {
                 let _ = client.unnotify(Some(&title));
+            }
+            // Changed in the hub or in the panel: the hub shows the values
+            // Death Recap keeps.
+            if shared.settings_changed.swap(false, Ordering::Relaxed) {
+                describe(&shared, &mut client);
             }
             if last_note.elapsed() >= Duration::from_secs(2) {
                 last_note = Instant::now();
@@ -255,6 +277,12 @@ pub fn note(fights: usize) -> String {
         1 => "1 fight recorded".into(),
         n => format!("{n} fights recorded"),
     }
+}
+
+/// Every setting with its value now, for the hub.
+fn describe(shared: &Shared, client: &mut Client) {
+    let groups = lock(&shared.settings).describe();
+    let _ = client.set_settings(&groups);
 }
 
 fn set_status(shared: &Shared, screen: &dyn Screen, text: &str) {

@@ -36,5 +36,7 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(true); });
   win.onFocusChanged(({ payload: focused }) => { if (!focused) close(false); else refresh(); }).catch(() => {});
   document.addEventListener("contextmenu", (e) => e.preventDefault());
+  // Changed in Flav-Toolkit's hub while the panel is open: show it.
+  tauri.event.listen("settings-changed", refresh).catch(() => {});
   refresh();
 })();
