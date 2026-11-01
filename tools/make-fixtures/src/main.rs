@@ -4,7 +4,7 @@
 //! cargo run --release -- fixtures          frames/*.txt → crates/recap/tests/fixtures/*.events.jsonl, checked against *.views.json
 //! ```
 //!
-//! `fixtures` runs the pinned core's engine over the frame fixtures exactly as
+//! `fixtures` runs the core's engine (the checkout beside this repository) over the frame fixtures exactly as
 //! the core's own tests did (the same `me` events at the same moments), writes
 //! the events one JSON line each, as the feed sends them, and builds this
 //! repository's views from them. It checks those views against

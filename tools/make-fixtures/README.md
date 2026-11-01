@@ -2,10 +2,10 @@
 
 Builds Death Recap's test fixtures from Flav-Toolkit's engine, and checks this repository's recap against the one that used to be built into Flav-Toolkit.
 
-It needs Flav-Toolkit checked out beside this repository, at the commit `Cargo.toml` pins, with the meter's parser synced:
+It needs Flav-Toolkit checked out beside this repository, at the tag of the version `Cargo.toml` takes (`v0.19.1` today), with the meter's parser synced. The core's repository is private, so only Flavbest's sessions can run it:
 
 ```text
-<folder>/flav-toolkit/                     git checkout <pinned commit>; python tools/sync_upstream.py
+<folder>/flav-toolkit/                     git checkout v<version>; python tools/sync_upstream.py
 <folder>/Aion-2-Death-recap-plugin/        this repository
 ```
 

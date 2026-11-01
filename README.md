@@ -158,7 +158,7 @@ cargo build --release -p death-recap     # Windows: target/release/death-recap.e
 cargo run -p death-recap --example print # no windows: each recap as a line (beside `flav feed <capture>`)
 ```
 
-The core is pinned by commit in `Cargo.toml` (`flav-events`, `flav-sdk`). While the core's own repository is private, a build here can't fetch those crates yet; that comes back once the core publishes them on its download page. How it works: [`docs/DESIGN.md`](docs/DESIGN.md). The GIFs and the banner on this page are made from the real pages with made-up fights, no recording: [`tools/readme-gifs`](tools/readme-gifs).
+The core's crates (`flav-events`, `flav-sdk`) come at a released version from the registry on its [download page](https://flavbestlol.github.io/flav-toolkit/) (`.cargo/config.toml`, `Cargo.toml`): no account or token needed. How it works: [`docs/DESIGN.md`](docs/DESIGN.md). The GIFs and the banner on this page are made from the real pages with made-up fights, no recording: [`tools/readme-gifs`](tools/readme-gifs).
 
 ## Credits
 

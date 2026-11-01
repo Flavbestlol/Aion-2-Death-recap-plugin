@@ -1,7 +1,7 @@
 # Turns the core's frame fixtures into the event fixtures Death Recap's tests
 # read, and checks this repository's views against the built-in recap's. Needs a
-# Flav-Toolkit checkout beside this repository, at the pinned commit, with the
-# meter's parser synced (`python tools/sync_upstream.py` there). Not part of
+# Flav-Toolkit checkout beside this repository, at the tag of the version below
+# (`v0.19.1`), with the meter's parser synced (`python tools/sync_upstream.py` there). Not part of
 # the workspace: CI never builds it.
 [package]
 name = "make-fixtures"
@@ -15,5 +15,5 @@ publish = false
 [dependencies]
 flav-core = { path = "../../../flav-toolkit/crates/flav-core" }
 recap = { path = "../../crates/recap" }
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
+flav-events = { version = "0.19.1", registry = "flav" }
 serde_json = "1"

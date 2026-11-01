@@ -1,0 +1,5 @@
+# The core's crates for add-ons (flav-events, flav-sdk, flav-feed,
+# flav-addons) come from the registry on Flav-Toolkit's download page: every
+# released version, no token (the core's own repository is private).
+[registries.flav]
+index = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"

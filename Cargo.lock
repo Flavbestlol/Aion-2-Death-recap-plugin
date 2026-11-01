@@ -1069,8 +1069,9 @@ dependencies = [
 
 [[package]]
 name = "flav-addons"
-version = "0.18.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
+version = "0.19.1"
+source = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"
+checksum = "1bcea02d3271b5805ea9810f172aafecfe3c3006b49c724664e5e7e69bcec352"
 dependencies = [
  "flav-events",
  "semver",
@@ -1080,8 +1081,9 @@ dependencies = [
 
 [[package]]
 name = "flav-events"
-version = "0.18.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
+version = "0.19.1"
+source = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"
+checksum = "84b31aa42c022afe3c714499b1709e54e27cba856d65852adf7218c2e7c53d75"
 dependencies = [
  "flav-inventory",
  "schemars 1.2.3",
@@ -1091,8 +1093,9 @@ dependencies = [
 
 [[package]]
 name = "flav-feed"
-version = "0.18.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
+version = "0.19.1"
+source = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"
+checksum = "c635db2d15182eafcb2d53cfefb2fb9a53f48d6dd1084f5723d4fbd7648ef34b"
 dependencies = [
  "flav-events",
  "flav-inventory",
@@ -1105,16 +1108,18 @@ dependencies = [
 
 [[package]]
 name = "flav-inventory"
-version = "0.18.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
+version = "0.19.1"
+source = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"
+checksum = "3601e80cebabfd9ea7e38fb44f5fe7c4b8c0232311600b90201419d3865a0da8"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "flav-sdk"
-version = "0.18.0"
-source = "git+https://github.com/Flavbestlol/flav-toolkit?rev=58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e#58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e"
+version = "0.19.1"
+source = "sparse+https://flavbestlol.github.io/flav-toolkit/cargo/"
+checksum = "4f150be3fabd2ded2e693cdeb9525551f8f842ca927bd53fa8444b5d23299765"
 dependencies = [
  "flav-events",
  "serde_json",
