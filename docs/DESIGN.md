@@ -1,6 +1,6 @@
 # Death Recap: design
 
-Status: 2026-10-27, v0.3.5. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, pinned to the core at `58b7ffd` (0.18.0; its PR #4 lets `addon.json` name the add-on's emblem, its PR #30 adds the dock's `toggle`, its PR #64 shows add-ons' settings in the hub).
+Status: 2026-11-01, v0.3.5. Moved out of Flav-Toolkit, where it was built in (decision 2 in the add-on contract: no add-on inside the core). Same recap, now its own program on the core's feed, on the core's crates at 0.19.1, from the registry on its download page (0.18.0 brought what it uses last: its PR #4 lets `addon.json` name the add-on's emblem, its PR #30 adds the dock's `toggle`, its PR #64 shows add-ons' settings in the hub).
 
 ```text
 AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.1, feed.json)
@@ -20,7 +20,7 @@ AION 2 ──▶ Flav-Toolkit (reads the game) ──▶ the feed (ws://127.0.0.
 | `app` | `death-recap.exe` (Tauri): the reader (`reader.rs`, testable without windows), the online lookups (`lookups.rs`), settings and shared state (`settings.rs`, `store.rs`), the windows (`main.rs`), Alt (`alt.rs`), the pages (`ui/`) |
 | `tools/make-fixtures` | Not in the workspace: builds the test fixtures from the core (needs a Flav-Toolkit checkout beside this one) |
 
-The core is pinned by commit (`Cargo.toml`, `[workspace.dependencies]`): `flav-events` (the events), `flav-sdk` (the feed's client); `flav-feed` and `flav-addons` for tests.
+The core's crates come at a released version from the registry on its download page (`.cargo/config.toml`; `Cargo.toml`, `[workspace.dependencies]`): `flav-events` (the events), `flav-sdk` (the feed's client); `flav-feed` and `flav-addons` for tests.
 
 ## The reader (`app/src/reader.rs`)
 
@@ -90,4 +90,4 @@ Same behaviour as when built in. **Two looks** (`settings.theme`): the HUD every
 - `crates/recap/tests/fights.rs`: three real sessions (two duels, a lost duel, a live Abyss death) as the events the core's engine read from the core's frame fixtures (ids only), one JSON line each as the feed sends them; their views must equal the built-in recap's (`*.views.json`) field for field. Plus the fight rules on made-up events.
 - `app/tests/against_the_feed.rs`: a real feed in the test process serves the Abyss death; the reader shows the recap, writes *1 fight recorded* in the hub and raises its note. The manifest is checked as the hub reads it.
 - `app/tests/lookups.rs`: the lookups against a made-up site with no network: the order, a refusal and a failure asked again, no such character asked once, a site that keeps failing given up on, a new fight taking over.
-- `tools/make-fixtures` (needs the core checked out beside this repository at the pinned commit): `fixtures` rebuilds both kinds of fixture from the frames in `tools/make-fixtures/frames/`; `compare <capture.txt>` checks a whole recorded session, fight by fight, against the built-in recap, and writes nothing (a session holds other players' names).
+- `tools/make-fixtures` (needs the core checked out beside this repository at the tag of the version `Cargo.toml` takes; the core's repository is private, so only Flavbest's sessions can): `fixtures` rebuilds both kinds of fixture from the frames in `tools/make-fixtures/frames/`; `compare <capture.txt>` checks a whole recorded session, fight by fight, against the built-in recap, and writes nothing (a session holds other players' names).

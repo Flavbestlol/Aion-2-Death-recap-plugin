@@ -13,15 +13,14 @@ authors = ["Flavbest"]
 repository = "https://github.com/Flavbestlol/Aion-2-Death-recap-plugin"
 
 [workspace.dependencies]
-# Flav-Toolkit, the core, pinned by commit (affd84c, 0.12.0: events carry
-# names and icons, buffs name the skill that applied them, the hub's `show`,
-# `addon.json` may name the add-on's emblem, and the dock's `toggle`).
-# Upgrade the pin on purpose; events only gain types and fields
-# within a version, so an old pin keeps working with a newer core.
-flav-events = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
-flav-sdk = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
-flav-feed = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
-flav-addons = { git = "https://github.com/Flavbestlol/flav-toolkit", rev = "58b7ffdec6f1699cf1f5226fd9024e8bc240ca5e" }
+# Flav-Toolkit, the core: its crates for add-ons at a released version, from
+# the registry on its download page (.cargo/config.toml). Upgrade on purpose;
+# events only gain types and fields within a version, so an older version
+# keeps working with a newer core.
+flav-events = { version = "0.19.1", registry = "flav" }
+flav-sdk = { version = "0.19.1", registry = "flav" }
+flav-feed = { version = "0.19.1", registry = "flav" }
+flav-addons = { version = "0.19.1", registry = "flav" }
 recap = { path = "crates/recap" }
 armory = { path = "crates/armory" }
 serde = { version = "1", features = ["derive"] }

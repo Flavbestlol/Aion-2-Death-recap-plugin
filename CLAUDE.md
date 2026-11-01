@@ -5,8 +5,8 @@ Death Recap, an add-on of Flav-Toolkit (download page: flavbestlol.github.io/fla
 ## Before changing anything
 
 - `git fetch` and branch from a fresh `main`: one branch per feature, a pull request, CI green, then merge. No direct pushes to `main`, no force-pushes.
-- Never change the core from here. A new event, field or fix in the core is asked for in `ADDONS.md` section 10.
-- Upgrading the core's pin (`rev` in `Cargo.toml`) is a pull request of its own: re-run `tools/make-fixtures` against that core and keep every test green.
+- Never change the core from here. A new event, field or fix in the core is asked for on this session's project page (`flav-toolkit/sessions/death-recap.md`, under *Asks*).
+- Upgrading the core's crates (`version` in `Cargo.toml`, from the registry on the download page, `.cargo/config.toml`) is a pull request of its own: re-run `tools/make-fixtures` against that core's tag and keep every test green.
 
 ## Commands
 
