@@ -1,6 +1,6 @@
 # Working in this repository
 
-Death Recap, an add-on of Flav-Toolkit (github.com/Flavbestlol/flav-toolkit): it reads the core's local feed and shows who killed you in AION 2. GPL-3.0, public, maintained by Flavbest with Claude sessions. This repository belongs to the session **Aion 2 - Death recap plugin**. `docs/DESIGN.md` is how it works; the add-on contract is the project doc `flav-toolkit/ADDONS.md`, and `flav-toolkit/SESSIONS.md` says who owns what (both are project docs, not files here).
+Death Recap, an add-on of Flav-Toolkit (download page: flavbestlol.github.io/flav-toolkit; its repository is private): it reads the core's local feed and shows who killed you in AION 2. GPL-3.0, public, maintained by Flavbest with Claude sessions. This repository belongs to the session **Aion 2 - Death recap plugin**. `docs/DESIGN.md` is how it works; the add-on contract is the project doc `flav-toolkit/ADDONS.md`, and `flav-toolkit/SESSIONS.md` says who owns what (both are project docs, not files here).
 
 ## Before changing anything
 

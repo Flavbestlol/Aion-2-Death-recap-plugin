@@ -3,9 +3,9 @@
 </p>
 
 <p align="center">
-  <a href="../../releases/latest"><img alt="Download" src="https://img.shields.io/badge/download-latest%20release-f2c35b?style=for-the-badge"></a>
+  <a href="https://flavbestlol.github.io/flav-toolkit/"><img alt="Download" src="https://img.shields.io/badge/download-Flav--Toolkit-f2c35b?style=for-the-badge"></a>
   <img alt="Windows 10/11" src="https://img.shields.io/badge/Windows-10%20%2F%2011-1f6fd6?style=for-the-badge">
-  <a href="https://github.com/Flavbestlol/flav-toolkit"><img alt="A Flav-Toolkit add-on" src="https://img.shields.io/badge/Flav--Toolkit-add--on-e8433a?style=for-the-badge"></a>
+  <a href="https://flavbestlol.github.io/flav-toolkit/"><img alt="A Flav-Toolkit add-on" src="https://img.shields.io/badge/Flav--Toolkit-add--on-e8433a?style=for-the-badge"></a>
   <img alt="Vibe coded" src="https://img.shields.io/badge/vibe-coded-6fe3a1?style=for-the-badge">
   <a href="https://ko-fi.com/flavbest"><img alt="Support on Ko-fi" src="https://img.shields.io/badge/support-Ko--fi-ff5e5b?style=for-the-badge&logo=ko-fi&logoColor=white"></a>
 </p>
@@ -33,7 +33,7 @@
 
 ## What it does
 
-Death Recap is an add-on of **[Flav-Toolkit](https://github.com/Flavbestlol/flav-toolkit)**: the core reads the game, Death Recap reads the core's local feed and shows you what killed you.
+Death Recap is an add-on of **[Flav-Toolkit](https://flavbestlol.github.io/flav-toolkit/)**: the core reads the game, Death Recap reads the core's local feed and shows you what killed you.
 
 ### The moment you fall
 
@@ -91,14 +91,12 @@ Only if you turn on online lookups does it ask the official AION 2 site for an a
 
 ## Install
 
-You need **Windows 10 or 11** (64-bit), **AION 2** in Borderless or Windowed mode, and **[Flav-Toolkit](https://github.com/Flavbestlol/flav-toolkit)** running. Death Recap reads the game through it; without it, Death Recap waits.
+You need **Windows 10 or 11** (64-bit), **AION 2** in Borderless or Windowed mode, and **[Flav-Toolkit](https://flavbestlol.github.io/flav-toolkit/)** running. Death Recap reads the game through it; without it, Death Recap waits.
 
-1. Download **`death-recap-<version>.zip`** from the [latest release](../../releases/latest).
-2. Extract it into its own folder inside one of the folders Flav-Toolkit's hub looks in for add-ons, for example `Addons\Death Recap\`. The folder holds `death-recap.exe`, `addon.json` and `emblem.png`.
-3. In the hub, **Death Recap** appears in the list. Click **Start**.
+1. Install **Flav-Toolkit** from its [download page](https://flavbestlol.github.io/flav-toolkit/).
+2. In its hub, open **Get add-ons** and click **Install** on **Death Recap**. The hub starts it, and shows **Update** when a newer version is out.
 
-> [!NOTE]
-> The first release is on its way. Until it's out, you can [build it yourself](#build-it-yourself).
+Or [build it yourself](#build-it-yourself).
 
 ## Is it safe?
 
@@ -142,7 +140,7 @@ Online lookups are off by default: turn them on in Death Recap's settings. When 
 <details>
 <summary><b>My antivirus flags it, or Windows says "Windows protected your PC"</b></summary>
 
-It's new and not code-signed. Download it only from this page's [Releases](../../releases/latest), never from a re-upload. If your antivirus still blocks it, please [open an issue](../../issues) with its name and the detection name.
+It's new and not code-signed. Get it only from the hub's **Get add-ons** or from the [download page](https://flavbestlol.github.io/flav-toolkit/), never from a re-upload. If your antivirus still blocks it, please [open an issue](../../issues) with its name and the detection name.
 </details>
 
 <details>
@@ -160,11 +158,11 @@ cargo build --release -p death-recap     # Windows: target/release/death-recap.e
 cargo run -p death-recap --example print # no windows: each recap as a line (beside `flav feed <capture>`)
 ```
 
-The core is pinned by commit in `Cargo.toml` (`flav-events`, `flav-sdk`). How it works: [`docs/DESIGN.md`](docs/DESIGN.md). The GIFs and the banner on this page are made from the real pages with made-up fights, no recording: [`tools/readme-gifs`](tools/readme-gifs).
+The core is pinned by commit in `Cargo.toml` (`flav-events`, `flav-sdk`). While the core's own repository is private, a build here can't fetch those crates yet; that comes back once the core publishes them on its download page. How it works: [`docs/DESIGN.md`](docs/DESIGN.md). The GIFs and the banner on this page are made from the real pages with made-up fights, no recording: [`tools/readme-gifs`](tools/readme-gifs).
 
 ## Credits
 
-- **[Flav-Toolkit](https://github.com/Flavbestlol/flav-toolkit)**, the core it reads, built on the parser of the **[A2 Tools DPS Meter](https://github.com/taengu/A2Tools-DPS-Meter)** by **taengu**.
+- **[Flav-Toolkit](https://flavbestlol.github.io/flav-toolkit/)**, the core it reads, built on the parser of the **[A2 Tools DPS Meter](https://github.com/taengu/A2Tools-DPS-Meter)** by **taengu**.
 - The banner's art and the emblem are original, made for this project.
 
 AION 2 is a trademark of NCSOFT. This project isn't affiliated with NCSOFT.
